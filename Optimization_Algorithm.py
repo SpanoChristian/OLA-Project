@@ -43,7 +43,7 @@ def min_max_budget(min_budget, max_budget, fun_budgets):
 
 # Vector of budgets => we will have to sort it
 # budgets = np.array([0, 10, 20, 30, 40, 50, 60, 70])
-budgets = np.linspace(0.0, 7.0, 8)
+budgets = np.linspace(0.0, 35.0, 8)
 
 # Generate the table setting the min and max budgets
 # A budget of a given campaign has a lower and upper bound that are defined by the function 'min_max_budget'
@@ -67,18 +67,21 @@ fun_34 = min_max_budget(0, 10, fun(110, budgets))
 fun_35 = min_max_budget(0, 10, fun(100, budgets))
 
 # Here we assume to have it (=STEP 1)
-value_budget = np.array([fun_11,
-                         fun_12,
-                         fun_13,
-                         fun_14,
-                         fun_15])
+# value_budget = np.array([fun_11,
+#                          fun_12,
+#                          fun_13,
+#                          fun_14,
+#                          fun_15])
 
-# m_inf = -np.inf
-'''value_budget = np.array([[m_inf, 90, 100, 105, 110, m_inf, m_inf, m_inf],
+
+m_inf = -np.inf
+value_budget = np.array([
+            [m_inf, 90, 100, 105, 110, m_inf, m_inf, m_inf],
             [0, 82, 90, 92, m_inf, m_inf, m_inf, m_inf],
             [0, 80, 83, 85, 86, m_inf, m_inf, m_inf],
             [m_inf, 90, 110, 115, 118, 120, m_inf, m_inf],
-            [m_inf, 111, 130, 138, 142, 148, 155, m_inf]])'''
+            [m_inf, 111, 130, 138, 142, 148, 155, m_inf]]
+)
 
 # Get, dynamically, the number of rows and cols
 value_budget_rows, value_budget_cols = value_budget.shape
