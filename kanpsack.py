@@ -56,7 +56,6 @@ def knapsack_optimizer(table):
             # update tables of values and pointers
             opt_table[row].append(max_value)
             opt_indexes[row - 1].append(temp.index(max_value))
-        print(opt_table)
 
     # optimal cumulative number of clicks
     opt_value = max(opt_table[rows - 1])
@@ -78,6 +77,5 @@ def knapsack_optimizer(table):
     assignments[0] = opt_col
 
     # return list(enumerate(assignments))
-    print(opt_table[rows-1][cols-1])
     return assignments
 

@@ -3,8 +3,11 @@ from Environment_step3 import *
 from GPTS_Learner import *
 import logging
 from kanpsack import *
+import warnings
+import matplotlib.pyplot as plt
 
 logging.basicConfig(level=logging.DEBUG)
+warnings.filterwarnings("ignore")
 
 
 # alpha function to be learnt
@@ -21,11 +24,11 @@ class Config(object):
 
 config = Config()
 config.sub_campaigns = 5
-config.alpha_bar = np.array(range(1, config.sub_campaigns + 1))
-config.speeds = np.random.normal([0.4, 0.6, 0.7, 0.5, 0.4], 0.0)
-config.sigmas = np.array([3 for i in range(config.sub_campaigns)])
+config.alpha_bar = np.array(range(1, config.sub_campaigns + 1)) * 10
+config.speeds = np.random.normal([0.4, 0.5, 0.6, 0.7, 0.8], 0.0)
+config.sigmas = np.array([0.2 for i in range(config.sub_campaigns)])
 config.max_budget = sum(config.speeds) * 5 / 2  # half the maximum required to reach the saturation of all the arms
-config.n_arms = 6
+config.n_arms = 10
 config.arms = np.linspace(0.0, config.max_budget, config.n_arms).T
 
 m = np.array(0)
@@ -57,18 +60,27 @@ learners = []
 for i in range(0, len(config.alpha_bar)):
     learners.append(GPTS_Learner(arms=config.arms, n_arms=config.n_arms))
 
-T = 1000
+T = 30
+x = []
+y = []
 for i in range(0, T):
     samples = np.zeros(shape=(0, config.n_arms))
     for learner in learners:
         tmp = np.array(learner.pull_all_arms())
         samples = np.append(samples, [tmp], axis=0)
 
-
+    print(i)
     arms = knapsack_optimizer(samples)
-
     for j in range(config.sub_campaigns):
-        arm_reward = env.round(subcampaign=j, pulled_arm=j)
-        learners[j].update(j, arm_reward)
+
+        arm_reward = env.round(subcampaign=j, pulled_arm=arms[j])
+        if j == 4:
+            x.append(arms[j])
+            y.append(arm_reward)
+        learners[j].update(arms[j], arm_reward)
+
+plt.plot(x, y)
+plt.show()
+
 
 print('ciao')
