@@ -6,9 +6,25 @@ def fun(max_value, x):
 
 
 def optimization_algorithm(table):
+    """
+        Algorithm to find the best allocation of the budgets to the various sub-campaigns
+        :param table: matrix in which each cell contains the expected return given a specific budget
+
+        Example (given in the slide of the course)
+        table = [
+            [m_inf, 90, 100, 105, 110, m_inf, m_inf, m_inf],
+            [0, 82, 90, 92, m_inf, m_inf, m_inf, m_inf],
+            [0, 80, 83, 85, 86, m_inf, m_inf, m_inf],
+            [m_inf, 90, 110, 115, 118, 120, m_inf, m_inf],
+            [m_inf, 111, 130, 138, 142, 148, 155, m_inf]
+        ]
+
+        :return: best allocation, i.e., how to allocate the budget to the various sub-campaigns
+    """
+
     # Budgets
     budgets = np.linspace(0.0, 7.0, 8)
-    print(f"budgets: {budgets}")
+    # print(f"budgets: {budgets}")
 
     # Get, dynamically, the number of rows and cols
     table_rows, table_row_cols = table.shape
@@ -16,9 +32,9 @@ def optimization_algorithm(table):
     n_budgets = budgets.size  # How many budgets do we have
     n_campaigns = table_rows  # How many campaigns do we have
 
-    print(f"Num budgets = {n_budgets}")
-    print(f"Num campaigns = {n_campaigns}")
-    print("--------------------------------")
+    # print(f"Num budgets = {n_budgets}")
+    # print(f"Num campaigns = {n_campaigns}")
+    # print("--------------------------------")
 
     # Initializations
     prev_campaign = np.empty(n_budgets)
@@ -26,7 +42,7 @@ def optimization_algorithm(table):
     opt_indexes = [[] for i in range(0, n_campaigns - 1)]
     opt_table = [[] for i in range(0, n_campaigns)]
 
-    print(f"Optimal indexes: {opt_indexes}")
+    # print(f"Optimal indexes: {opt_indexes}")
 
     for i in range(0, n_campaigns + 1):
         curr_campaign = np.zeros(n_budgets)
@@ -55,19 +71,19 @@ def optimization_algorithm(table):
             opt_table[i - 1] = np.append(opt_table[i - 1], curr_campaign)
         prev_campaign = curr_campaign
 
-        print(f"Campaign c_{i}: {curr_campaign}")
+        # print(f"Campaign c_{i}: {curr_campaign}")
 
-    print(f"Optimal table: {opt_table}")
+    # print(f"Optimal table: {opt_table}")
 
     # Subtracting the corresponding budget to the optimal
     for k in range(0, n_budgets):
         curr_campaign[k] -= budgets[k]
 
-    print(f"\n\nSubtracting Budget: {curr_campaign}")
+    # print(f"\n\nSubtracting Budget: {curr_campaign}")
     idx_best_budget = int(max((v, i) for i, v in enumerate(curr_campaign))[1])
 
-    print(f"B* (Best Budget) = {int(budgets[idx_best_budget])}")
-    print(f"Algorithm complexity = {n_campaigns * n_budgets ^ 2}")
+    # print(f"B* (Best Budget) = {int(budgets[idx_best_budget])}")
+    # print(f"Algorithm complexity = {n_campaigns * n_budgets ^ 2}")
 
     allocations = [0 for r in range(n_campaigns)]
     for i in range(n_campaigns - 1, 0, -1):
@@ -80,8 +96,10 @@ def optimization_algorithm(table):
     tot_clicks = np.array([])
     for i in range(0, len(allocations)):
         tot_clicks = np.append(tot_clicks, table[i][allocations[i]])
-        print(f"Budget for c_{i + 1}: {allocations[i]}K € -- Number of clicks: {tot_clicks[i]}")
+        # print(f"Budget for c_{i + 1}: {allocations[i]}K € -- Number of clicks: {tot_clicks[i]}")
 
-    print("---------------------------------------------------------")
-    print(f"\t\t  Sum = {np.sum(allocations)}K €\t\t\t    Sum = {np.sum(tot_clicks)}")
-    print(f"\nBest allocation: {allocations}")
+    return allocations
+
+    # print("---------------------------------------------------------")
+    # print(f"\t\t  Sum = {np.sum(allocations)}K €\t\t\t    Sum = {np.sum(tot_clicks)}")
+    # print(f"\nBest allocation: {allocations}")
