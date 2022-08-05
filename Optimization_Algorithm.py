@@ -4,17 +4,6 @@ import numpy as np
 def fun(max_value, x):
     return max_value * (1 - np.exp(-x))
 
-'''
-m_inf = -np.inf
-table = np.array([
-            [m_inf, 90, 100, 105, 110, m_inf, m_inf, m_inf],
-            [0, 82, 90, 92, m_inf, m_inf, m_inf, m_inf],
-            [0, 80, 83, 85, 86, m_inf, m_inf, m_inf],
-            [m_inf, 90, 110, 115, 118, 120, m_inf, m_inf],
-            [m_inf, 111, 130, 138, 142, 148, 155, m_inf]]
-)
-'''
-
 
 def optimization_algorithm(table):
     # Budgets
