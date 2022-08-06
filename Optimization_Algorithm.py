@@ -1,10 +1,6 @@
 import numpy as np
 
 
-def fun(max_value, x):
-    return max_value * (1 - np.exp(-x))
-
-
 def optimization_algorithm(table):
     """
         Algorithm to find the best allocation of the budgets to the various sub-campaigns
