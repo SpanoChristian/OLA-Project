@@ -22,7 +22,7 @@ x_obs = np.array([])  # served bids
 y_obs = np.array([])  # corresponding (to x_obs) observed clicks
 
 # Increasing noise => increasing uncertainty
-noise_std = 0.4
+noise_std = 2
 
 for i in range(0, n_obs):
     # Generate a point based on the value of the bid (chosen randomly)

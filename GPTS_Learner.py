@@ -12,7 +12,7 @@ class GPTS_Learner(Learner):
         self.sigmas = np.ones(self.n_arms) * 0.7
 
         self.pulled_arms = []
-        alpha = 10.0
+        alpha = 0.8
         kernel = ConstantKernel(1.0, (1e-3, 1e3)) * RBF(1.0,(1e-3, 1e3))
         self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
                                            normalize_y=True, n_restarts_optimizer=9)
