@@ -1,21 +1,12 @@
-import numpy as np
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF, ConstantKernel
 from Learner import Learner
+import numpy as np
 
 
-class GPTS_Learner(Learner):
-    def __init__(self, n_arms, arms):
-        super().__init__(n_arms)
+class UCB1(Learner):
+    def __init__(self, arms):
+        super().__init__(len(arms))
         self.arms = arms
-        self.means = np.zeros(self.n_arms)
-        self.sigmas = np.ones(self.n_arms) * 0.7
-
         self.pulled_arms = []
-        alpha = 10
-        kernel = RBF(1.0, (1e-3, 1e3)) * ConstantKernel(1.0, (1e-3, 1e3))
-        self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
-                                           normalize_y=True, n_restarts_optimizer=9)
 
     def update_observations(self, arm_idx, reward):
         super().update_observations(arm_idx, reward)

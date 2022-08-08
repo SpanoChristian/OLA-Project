@@ -29,4 +29,4 @@ class Subcampaign:
         if arm_idx is not None:
             return np.random.normal(self.means[arm_idx], self.sigma)
         else:
-            return np.random.normal(means, sigma)
+            return np.random.normal(self.means, self.sigma)

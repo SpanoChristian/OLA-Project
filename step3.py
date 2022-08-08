@@ -28,8 +28,8 @@ config = Config()
 config.sub_campaigns = 5
 config.alpha_bar = np.array(range(1, config.sub_campaigns + 1)) * 10
 config.speeds = np.random.normal([0.4, 0.5, 0.6, 0.7, 0.8], 0.0)
-config.sigmas = np.array([0.99 for i in range(config.sub_campaigns)])
-config.max_budget = sum(config.speeds) * 5 / 2  # half the maximum required to reach the saturation of all the arms
+config.sigmas = np.array([0.1 for i in range(config.sub_campaigns)])
+config.max_budget = sum(config.speeds) * 5  # half the maximum required to reach the saturation of all the arms
 config.n_arms = 10
 config.arms = np.linspace(0.0, config.max_budget, config.n_arms).T
 
@@ -62,7 +62,7 @@ learners = []
 for i in range(0, len(config.alpha_bar)):
     learners.append(GPTS_Learner(arms=config.arms, n_arms=config.n_arms))
 
-T = 200
+T = 501
 x = [[] for i in range(5)]
 y = [[] for i in range(5)]
 y_pred = [[] for i in range(5)]
@@ -77,16 +77,20 @@ for i in range(0, T):
         samples = np.append(samples, [tmp], axis=0)
 
     print(i)
-    arms = knapsack_optimizer(samples)
-    for j in range(config.sub_campaigns):
 
+    arms = knapsack_optimizer(samples)
+
+    for j in range(config.sub_campaigns):
         arm_reward = env.round(subcampaign=j, pulled_arm=arms[j])
 
         x[j].append(arms[j])
         y[j].append(arm_reward)
-        learners[j].update(arms[j], arm_reward)
+        if i % 5 == 0:
+            learners[j].update(arms[j], arm_reward)
+        else:
+            learners[j].update_observations(arms[j], arm_reward)
 
-    if i % 20 == 0:
+    if i % 50 == 0:
         plt.figure(figsize=(20, 5))
         for j in range(config.sub_campaigns):
             y_pred[j] = learners[j].means
@@ -109,8 +113,5 @@ for i in range(0, T):
             plt.ylabel('$n(x)$')
             plt.legend(loc="lower right")
         plt.show()
-
-
-
 
 print('ciao')

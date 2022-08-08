@@ -1,31 +1,25 @@
+import matplotlib; matplotlib.use("TkAgg")
 import numpy as np
-import math
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
-# Parameters
-obs_2nd_slot = 0.4  # Lambda parameter
-ratio_users = np.random.dirichlet((1, 10, 1, 1, 1))  # Alpha vector
 
-# Weights matrix
-# Rows: secondary products
-# Cols: primary products
-W = np.array([[0, 0.1, 0.3, 0.2, 0.1], [0.1, 0, 0.2, 0.4, 0.2], [0.2, 0.3, 0, 0.2, 0.1],
-              [0.3, 0.3, 0.1, 0, 0.2], [0.2, 0.1, 0.3, 0.2, 0]])
+fig, ax = plt.subplots()
 
-# Display matrix
-# This matrix will be updated whenever a product will be displayed as primary
-# Initialization: all ones
-D = np.ones([5, 5], dtype=int)
-D = np.array([[1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]])
+x = np.arange(0, 2*np.pi, 0.01)
+line, = ax.plot(x, np.sin(x))
 
-# Probabilities of observing SLOT 1
-print(f"Probabilities of observing SLOT 1: \n {W * D}")
 
-# Probabilities of observing SLOT 2
-print(f"Probabilities of observing SLOT 2: \n {obs_2nd_slot * W * D}")
+def animate(i):
+    line.set_ydata(np.sin(x + i/10.0))  # update the data
+    return line,
 
-print(ratio_users)
 
-budget = np.array([4, 20, 2, 0.5, 3])
-ratio_users = 0.4 * (1 - np.exp(-np.sqrt(budget)))
+# Init only required for blitting to give a clean slate.
+def init():
+    line.set_ydata(np.ma.array(x, mask=True))
+    return line,
 
-print(f"\n\nRatio users: {ratio_users}")
+ani = animation.FuncAnimation(fig, animate, np.arange(1, 20000), init_func=init,
+                              interval=25, blit=True)
+plt.show()
