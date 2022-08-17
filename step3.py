@@ -26,7 +26,7 @@ class Config(object):
 
 config = Config()
 config.sub_campaigns = 5
-config.alpha_bar = np.array(range(1, config.sub_campaigns + 1)) * 10
+config.alpha_bar = np.array(range(1, config.sub_campaigns + 1))
 config.speeds = np.random.normal([0.4, 0.5, 0.6, 0.7, 0.8], 0.0)
 config.sigmas = np.array([0.1 for i in range(config.sub_campaigns)])
 config.max_budget = sum(config.speeds) * 5  # half the maximum required to reach the saturation of all the arms
@@ -62,7 +62,7 @@ learners = []
 for i in range(0, len(config.alpha_bar)):
     learners.append(GPTS_Learner(arms=config.arms, n_arms=config.n_arms))
 
-T = 501
+T = 102
 x = [[] for i in range(5)]
 y = [[] for i in range(5)]
 y_pred = [[] for i in range(5)]
@@ -85,12 +85,10 @@ for i in range(0, T):
 
         x[j].append(arms[j])
         y[j].append(arm_reward)
-        if i % 5 == 0:
-            learners[j].update(arms[j], arm_reward)
-        else:
-            learners[j].update_observations(arms[j], arm_reward)
 
-    if i % 50 == 0:
+        learners[j].update(arms[j], arm_reward)
+
+    if i % 10 == 0:
         plt.figure(figsize=(20, 5))
         for j in range(config.sub_campaigns):
             y_pred[j] = learners[j].means
