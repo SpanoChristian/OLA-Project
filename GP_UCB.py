@@ -1,15 +1,19 @@
+import math
+
 import numpy as np
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel
 from Learner import Learner
 
 
-class GPTS_Learner(Learner):
+class GP_UCB_Learner(Learner):
     def __init__(self, n_arms, arms, alpha=0.5):
         super().__init__(n_arms)
         self.arms = arms
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
+        self.nt = [0.0001 for i in range(0, n_arms)]
+        self.beta = [1.0 for i in range(0, n_arms)]
 
         self.pulled_arms = []
         # default:
@@ -30,14 +34,20 @@ class GPTS_Learner(Learner):
         self.means, self.sigmas = self.gp.predict(np.atleast_2d(self.arms).T, return_std=True)
         self.sigmas = np.maximum(self.sigmas, 1e-2)
 
+    def update_betas(self):
+        for i in range(0, len(self.arms)):
+            self.beta[i] = math.sqrt((2 * math.log(self.t)) / self.nt[i])
+
     def update(self, pulled_arm, reward):
         self.t += 1
         self.update_observations(pulled_arm, reward)
         self.update_model()
+        self.nt[pulled_arm] += 1
+        self.update_betas()
 
     def pull_arm(self):
-        sampled_values = np.random.normal(self.means, self.sigmas)
-        return np.argmax(sampled_values)
+        sampled_values = np.argmax(self.means + self.sigmas * self.beta)
+        return sampled_values
 
     def pull_all_arms(self):
         sampled_values = np.maximum(np.random.normal(self.means, self.sigmas), 0)
