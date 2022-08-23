@@ -1,5 +1,5 @@
 import numpy as np
-from Environment_step3 import *
+from Environment_step5 import *
 from GPTS_Learner import *
 from GP_UCB import *
 import logging
@@ -54,8 +54,6 @@ config.second_secondary = np.array([[0, 0, 0, 0, 0],
                                     [0, 0, 0, 0, 0],
                                     [0, 0, 0, 0, 0]])
 
-
-
 m = np.array(0)
 for i in range(config.sub_campaigns):
     for j in range(config.n_arms):
@@ -72,11 +70,10 @@ n_arms:                     {config.n_arms},
 arms:                       {config.arms}
 ''')
 
-env = Environment()
+env = Environment(config.adj_matrix, 0.02, 1000)
 
 for i in range(config.sub_campaigns):
-    sc = Subcampaign(budgets=config.arms, function=lambda x: fun(x, config.alpha_bar[i], config.speeds[i]),
-                     sigma=config.sigmas[i])
+    sc = Subcampaign(budgets=config.arms, function=lambda x: fun(x, config.alpha_bar[i], config.speeds[i]))
     env.add_subcampaign(subcampaign=sc)
 
 print("created subcampaigns")
@@ -84,7 +81,6 @@ print("created subcampaigns")
 learners = []
 for i in range(0, len(config.alpha_bar)):
     learners.append(GPTS_Learner(arms=config.arms, n_arms=config.n_arms))
-
 
 aux = []
 for i in range(0, 100):
@@ -95,9 +91,10 @@ for i in range(0, 100):
 list = [{'elem': item, 'count': aux.count(item)} for item in aux]
 max = max(range(len(list)), key=lambda i: list[i]['count'])
 clairvoyant_solution = list[max]['elem']
-
-clairvoyant_reward = sum(np.random.dirichlet([env.round(subcampaign, arm) for subcampaign, arm in zip(range(config.sub_campaigns),
-                                                                                  clairvoyant_solution)]))
+k = [np.random.normal(10, 1)]
+env.next_day(clairvoyant_solution)
+k.extend([env.get_reward(subcampaign) for subcampaign in range(config.sub_campaigns)])
+clairvoyant_reward = sum(k[1:])
 
 T = 101
 x = [[] for i in range(5)]
@@ -115,9 +112,10 @@ for i in range(0, T):
 
     arms = optimization_algorithm(samples)
 
-    for j in range(config.sub_campaigns):
+    env.next_day(arms)
 
-        arm_reward = env.round(subcampaign=j, pulled_arm=arms[j])
+    for j in range(config.sub_campaigns):
+        arm_reward = env.get_reward(j)
 
         x[j].append(arms[j])
         y[j].append(arm_reward)

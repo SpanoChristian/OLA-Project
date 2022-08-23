@@ -1,39 +1,63 @@
 import logging
-
 import numpy as np
+import copy
+from graph_algorithm import get_graph_paths
+from functools import reduce
+from collections.abc import Iterable
 
 
 class Environment:
-    def __init__(self, adj_matrix_primary, adj_matrix_secondary):
+    def __init__(self, adj_matrix, matrix_sigma, daily_clicks):
         self.subcampaigns = []
-        self.adj_matrix_primary = adj_matrix_primary
-        self.adj_matrix_secondary = adj_matrix_secondary
+        self.adj_matrix = adj_matrix
+        self.matrix_sigma = matrix_sigma
+        self.reward = [0, 0, 0, 0, 0]
+        self.daily_clicks = daily_clicks
 
     def add_subcampaign(self, subcampaign):
         self.subcampaigns.append(subcampaign)
 
+    def next_day(self, arms):
+        k = [np.random.normal(10000, 1)]
+        k.extend(np.array([self.round(i, arms[i]) for i in range(len(self.subcampaigns))])*100)
+        self.reward = np.random.dirichlet(k)[1:] * self.daily_clicks
+
+    def get_reward(self, subcampaign):
+        return self.reward[subcampaign]
+
+    def get_all_clicks(self, arm, clicks):
+        matrix = self.get_matrix()
+        paths = get_graph_paths(matrix, arm)
+        res = 0
+        for path in paths:
+            sub_res = 1
+            for i, item in enumerate(path[1:]):
+                c = matrix[path[i]][item]
+                sub_res *= c
+            res += sub_res * clicks
+        return res
+
+    def get_matrix(self):
+        return np.random.normal(self.adj_matrix, self.matrix_sigma)
+
     def round(self, subcampaign=None, pulled_arm=None):
         if subcampaign is not None:
-            res = self.subcampaigns[subcampaign].round(arm_idx=pulled_arm)
-            res = [i + get_secondary_clicks(pulled_arm, i) for i in res]
+            res = np.maximum(self.subcampaigns[subcampaign].round(arm_idx=pulled_arm), 0.0001)
+            res = self.get_all_clicks(subcampaign, res)
             return res
         else:
             res = []
-            for subcampaign in self.subcampaigns:
-                res.append(subcampaign.round(pulled_arm))
+            for subcampaign in range(len(self.subcampaigns)):
+                res.append(self.round(subcampaign, pulled_arm))
             return res
-
-    def get_secondary_clicks(self, arm):
-        return sum(self.adj_matrix_primary[arm]*i)
 
 
 class Subcampaign:
-    def __init__(self, budgets, function, sigma):
+    def __init__(self, budgets, function):
         self.means = function(budgets)
-        self.sigma = sigma
 
     def round(self, arm_idx=None):
         if arm_idx is not None:
-            return np.random.normal(self.means[arm_idx], self.sigma)
+            return self.means[arm_idx]
         else:
-            return np.random.normal(self.means, self.sigma)
+            return self.means
