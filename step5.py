@@ -85,7 +85,7 @@ for i in range(0, len(config.alpha_bar)):
 aux = []
 for i in range(0, 100):
     k = np.array(env.round())
-    sol = knapsack_optimizer(np.array(env.round()))
+    sol = optimization_algorithm(np.array(env.round()))
     aux.append(sol)
 
 list = [{'elem': item, 'count': aux.count(item)} for item in aux]

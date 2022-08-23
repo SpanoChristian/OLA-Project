@@ -1,14 +1,5 @@
 import numpy as np
 
-initial_graph = np.array([[0, 0, 0.2, 0, 0],
-                          [0.1, 0, 0, 0.3, 0],
-                          [0, 0.2, 0, 0.1, 0],
-                          [0.2, 0, 0, 0, 0],
-                          [0, 0, 0, 0, 0]
-                          ])
-initial_node = 1
-initial_clicks = 1
-
 
 def get_graph_paths(graph, node):
     aux = graph.copy()
@@ -35,7 +26,3 @@ def get_graph_paths(graph, node):
                 {'matrix': matrix.copy(), 'node': i, 'path': elem['path'].copy()})
             # print(f''' path: {elem['path']}, {clicks * matrix[node][i]} clicks arrived to {i + 1} ''')
     return paths
-
-
-_paths = get_graph_paths(initial_graph, initial_node)
-print(_paths)
