@@ -1,14 +1,10 @@
-import numpy as np
-from Environment_step3 import *
-from GPTS_Learner import *
-from GP_UCB import *
+from Environments.Environment_step3 import *
+from Learners.GPTS_Learner import *
 import logging
-from kanpsack import *
+from utils.kanpsack import *
 import warnings
-import matplotlib
 import matplotlib.gridspec as gridspec
-from matplotlib.pyplot import figure
-from Optimization_Algorithm import *
+from utils.Optimization_Algorithm import *
 import matplotlib.pyplot as plt
 
 plt.ion()
