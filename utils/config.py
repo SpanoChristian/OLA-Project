@@ -48,4 +48,4 @@ class Alpha_Function(FromJson):
         self.speed = speed
 
 
-config = jstyleson.load(open('config.json'))
+config = jstyleson.load(open('utils/config.json'))

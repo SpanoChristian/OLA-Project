@@ -29,10 +29,6 @@ def optimization_algorithm(table):
     n_budgets = budgets.size  # How many budgets do we have
     n_campaigns = table_rows  # How many campaigns do we have
 
-    # print(f"Num budgets = {n_budgets}")
-    # print(f"Num campaigns = {n_campaigns}")
-    # print("--------------------------------")
-
     # Initializations
     prev_campaign = np.empty(n_budgets)
     tmp_campaign = np.zeros(n_budgets)
@@ -66,9 +62,9 @@ def optimization_algorithm(table):
             opt_table[i - 1] = np.append(opt_table[i - 1], curr_campaign)
         prev_campaign = curr_campaign
 
-        print(f"Campaign c_{i}: {curr_campaign}")
+        # print(f"Campaign c_{i}: {curr_campaign}")
 
-    print(f"Optimal table: {opt_table}")
+    # print(f"Optimal table: {opt_table}")
 
     # Subtracting the corresponding budget to the optimal
     for k in range(0, n_budgets):
@@ -91,11 +87,11 @@ def optimization_algorithm(table):
     tot_clicks = np.array([])
     for i in range(0, len(allocations)):
         tot_clicks = np.append(tot_clicks, table[i][allocations[i]])
-        print(f"Budget for c_{i + 1}: {allocations[i]}K € -- Number of clicks: {tot_clicks[i]}")
+        # print(f"Budget for c_{i + 1}: {allocations[i]}K € -- Number of clicks: {tot_clicks[i]}")
 
-    print("---------------------------------------------------------")
-    print(f"\t\t  Sum = {np.sum(allocations)}K €\t\t\t    Sum = {np.sum(tot_clicks)}")
-    print(f"\nBest allocation: {allocations}")
+    # print("---------------------------------------------------------")
+    # print(f"\t\t  Sum = {np.sum(allocations)}K €\t\t\t    Sum = {np.sum(tot_clicks)}")
+    # print(f"\nBest allocation: {allocations}")
 
     return allocations
 
@@ -124,5 +120,5 @@ table_try = [[0.34987242, 0.22612149, 0.8292004, m_inf, m_inf, m_inf,  m_inf, m_
          [m_inf, 0.01572035, m_inf, 0.02196359, 0.0689752, m_inf, m_inf, 0.92770914, 0.93627901, 0.48566602],
          [m_inf, m_inf, m_inf, m_inf, m_inf, m_inf, 0.38232258, m_inf, m_inf, m_inf]]
 
-print(optimization_algorithm(np.asarray(table_try)))
+# print(optimization_algorithm(np.asarray(table_try)))
 
