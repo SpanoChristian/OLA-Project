@@ -1,14 +1,10 @@
 import numpy as np
 from utils.graph_algorithm import get_graph_paths
-
-
-def to_sum_1(array: np.ndarray):
-    partial = array / array.min()
-    return partial / partial.sum()
+from utils.utils import *
 
 
 class Base_Environment:
-    def __init__(self, n_subcampaigns, alpha_bars, speeds, opponent, adj_matrix, budgets):
+    def __init__(self, n_subcampaigns, alpha_bars, speeds, opponent, adj_matrix, budgets, daily_clicks):
         """
         Base environment to represent the simplest scenario where everything is well-defined
         :param n_subcampaigns: number of subcampaigns
@@ -26,14 +22,15 @@ class Base_Environment:
         self.opponent = opponent
         self.adj_matrix = adj_matrix
         self.budgets = budgets
+        self.daily_clicks = daily_clicks
 
         self.subcampaigns = [Base_Subcampaign(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
                              for i in range(n_subcampaigns)]
         self.t = 0
-        self.reward = [0 for i in range(n_subcampaigns)]
+        self.rewards = [0 for i in range(n_subcampaigns)]
 
     def get_reward(self, subcampaign):
-        return self.reward[subcampaign]
+        return self.rewards[subcampaign]
 
     def get_all_clicks(self, subcampaign, clicks):
         """
@@ -62,12 +59,15 @@ class Base_Environment:
         :param pulled_arms: arms pulled
         """
         vals = []
-        for i, subcampaign in enumerate(self.subcampaigns):
-            vals.append(self.round(pulled_arms[i]))
-        assert sum(vals) < 1
+        for i in range(self.n_subcampaigns):
+            pulled_arm = pulled_arms[i]
+            vals.append(self.round(subcampaign=i, pulled_arm=pulled_arm))
+        # assert sum(vals) < 1: conceptually wrong:
+        # we have ratios among only primary product and opponent. We should not consider
+        # secondary clicks (that are automatically added inside self.round(...)
         k = [1 - sum(vals)]
         k.extend(np.array(vals))
-        self.reward = (to_sum_1(np.array(k)) * self.daily_clicks)[1:]
+        self.rewards = (to_sum_1(np.array(k)) * self.daily_clicks)[1:]
 
     def round(self, subcampaign=None, pulled_arm=None):
         """
@@ -79,7 +79,7 @@ class Base_Environment:
         :return:
         """
         if subcampaign is not None:
-            res = np.maximum(self.subcampaigns[subcampaign].round(arm_idx=pulled_arm), 0.0001)
+            res = self.subcampaigns[subcampaign].round(arm_idx=pulled_arm)
             res = self.get_all_clicks(subcampaign, res)
             return res
         else:

@@ -1,10 +1,12 @@
 import logging
 
 import numpy as np
+from Environments.Base_Environment import *
 
 
-class Environment:
-    def __init__(self):
+class Environment(Base_Environment):
+    def __init__(self, n_subcampaigns, alpha_bars, speeds, opponent, adj_matrix, budgets):
+        super().__init__(n_subcampaigns, alpha_bars, speeds, opponent, adj_matrix, budgets)
         self.subcampaigns = []
 
     def add_subcampaign(self, subcampaign):

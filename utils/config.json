@@ -27,31 +27,5 @@
     30,
     60
   ],
-  "alpha_functions": [
-    {
-      "alpha_bar": 1000,
-      "speed": 0.3,
-      "sigma": 10
-    },
-    {
-      "alpha_bar": 1200,
-      "speed": 0.4,
-      "sigma": 10
-    },
-    {
-      "alpha_bar": 1300,
-      "speed": 0.5,
-      "sigma": 10
-    },
-    {
-      "alpha_bar": 1400,
-      "speed": 0.6,
-      "sigma": 10
-    },
-    {
-      "alpha_bar": 1500,
-      "speed": 0.7,
-      "sigma": 10
-    }
-  ]
+  "n_subcampaigns": 5
 }

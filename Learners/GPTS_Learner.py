@@ -5,8 +5,8 @@ from Learners.Learner import Learner
 
 
 class GPTS_Learner(Learner):
-    def __init__(self, n_arms, arms, alpha=0.5):
-        super().__init__(n_arms)
+    def __init__(self, arms, alpha=0.5):
+        super().__init__(len(arms))
         self.arms = arms
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
