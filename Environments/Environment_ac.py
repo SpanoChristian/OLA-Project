@@ -7,8 +7,14 @@ class Environment:
                  alpha_bar_low, alpha_bar_high, speed_low, speed_high,
                  opponent_mean, opponent_variance,
 
-                 phase_tau=30000):
-        self.subcampaigns = []
+                 n_subcampaigns,
+                 budgets,
+                 phase_tau=40000):
+        self.subcampaigns = [Subcampaign(budgets=budgets,
+                                         alpha_bar=np.random.uniform(alpha_bar_low, alpha_bar_high),
+                                         speed=np.random.uniform(speed_low, speed_high)
+                                         ) for i in range(n_subcampaigns)]
+
         self.adj_matrix = adj_matrix
         self.matrix_sigma = matrix_sigma
         self.reward = [0, 0, 0, 0, 0]
@@ -21,7 +27,14 @@ class Environment:
         self.speed_high = speed_high
         self.opponent_mean = opponent_mean
         self.opponent_variance = opponent_variance
+        self.total = 0
+        self.update_total()
 
+    def update_total(self):
+        self.total = sum(
+            [self.get_all_clicks(i, subcampaign.alpha_bar) for i, subcampaign in enumerate(self.subcampaigns)]) + \
+                     np.random.normal(
+                         self.opponent_mean, self.opponent_variance)
 
     def add_subcampaign(self, subcampaign):
         self.subcampaigns.append(subcampaign)
@@ -34,18 +47,19 @@ class Environment:
                     abs(np.random.uniform(self.alpha_bar_low, self.alpha_bar_high)),
                     abs(np.random.uniform(self.speed_low, self.speed_high))
                 )
+            self.update_total()
 
-        _max = sum([i.alpha_bar for i in self.subcampaigns])/10
-        k = [np.random.normal(self.opponent_mean, self.opponent_variance)]
-        k.extend(np.array([self.round(i, arms[i]) for i in range(len(self.subcampaigns))]) * 100)
-        self.reward = np.random.dirichlet(k)[1:] * self.daily_clicks
+        values_subcampaigns = [self.round(i, arms[i]) for i in range(len(self.subcampaigns))]
+        k = [self.total - sum(values_subcampaigns)]
+        k.extend(np.array(values_subcampaigns))
+        self.reward = (np.random.dirichlet(k) * self.daily_clicks)[1:]
 
     def get_reward(self, subcampaign):
         return self.reward[subcampaign]
 
-    def get_all_clicks(self, arm, clicks):
+    def get_all_clicks(self, subcampaign, clicks):
         matrix = self.get_matrix()
-        paths = get_graph_paths(matrix, arm)
+        paths = get_graph_paths(matrix, subcampaign)
         res = 0
         for path in paths:
             sub_res = 1
