@@ -7,6 +7,7 @@ import matplotlib.gridspec as gridspec
 from utils.Optimization_Algorithm import *
 import matplotlib.pyplot as plt
 from utils.config import *
+import time
 
 logging.basicConfig(level=logging.DEBUG)
 warnings.filterwarnings("ignore")
@@ -55,14 +56,14 @@ y_pred = [[] for i in range(5)]
 x_pred = config.budgets
 sigmas = [[] for i in range(5)]
 gs = gridspec.GridSpec(1, 5)
-
+start = time.time()
 for i in range(0, T):
     samples = np.zeros(shape=(0, len(config.budgets)))
     for learner in learners:
         tmp = np.array(learner.pull_all_arms())
         samples = np.append(samples, [tmp], axis=0)
 
-    arms = knapsack_optimizer(samples)
+    arms = optimization_algorithm(samples)
     env.compute_rewards(arms)
 
     for j in range(config.n_subcampaigns):
@@ -76,7 +77,9 @@ for i in range(0, T):
         else:
             learners[j].update(arms[j], arm_reward)
 
-best_arms = knapsack_optimizer(np.array(env.round()))
+
+
+best_arms = optimization_algorithm(np.array(env.round()))
 env.compute_rewards(best_arms)
 y_clairvoyant = [sum([env.get_reward(j) for j in range(config.n_subcampaigns)]) for i in range(T)]
 
@@ -85,4 +88,5 @@ y = [sum([learner.collected_rewards[i] for learner in learners]) for i in range(
 
 plt.plot(x, y, label=u'GPTS reward')
 plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')
+plt.text(x=T * 0.75, y=np.average(y_clairvoyant) * 0.05, s=f'total time: {"{:.2f}".format(time.time() - start)}')
 plt.show()
