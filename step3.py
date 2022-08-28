@@ -22,7 +22,7 @@ config = Config()
 config.n_subcampaigns = 5
 config.ratios = to_sum_1(np.array([3, 2, 3, 4, 5, 6]))
 config.alpha_bars = config.ratios[1:]
-config.speeds = [np.random.uniform(0.1, 2) for i in range(config.n_subcampaigns)]
+config.speeds = [np.random.uniform(0.1, 0.9) for i in range(config.n_subcampaigns)]
 config.opponent = config.ratios[0]
 config.adj_matrix = np.array([
     [0, 0, 0.04, 0.07, 0.9],
@@ -31,7 +31,7 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 1.5, 100)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 1.5, 200)
 
 env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        alpha_bars=config.alpha_bars,
