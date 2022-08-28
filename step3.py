@@ -88,5 +88,6 @@ y = [sum([learner.collected_rewards[i] for learner in learners]) for i in range(
 
 plt.plot(x, y, label=u'GPTS reward')
 plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')
-plt.text(x=T * 0.75, y=np.average(y_clairvoyant) * 0.05, s=f'total time: {"{:.2f}".format(time.time() - start)}')
+
+plt.text(x=T * 0.75, y=np.average(y_clairvoyant) * 0.9, s=f'total time: {"{:.2f}".format(time.time() - start)}')
 plt.show()
