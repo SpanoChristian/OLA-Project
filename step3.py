@@ -8,6 +8,7 @@ from utils.Optimization_Algorithm import *
 import matplotlib.pyplot as plt
 from utils.config import *
 import time
+from utils.MKCP import *
 
 logging.basicConfig(level=logging.DEBUG)
 warnings.filterwarnings("ignore")
@@ -63,7 +64,7 @@ for i in range(0, T):
         tmp = np.array(learner.pull_all_arms())
         samples = np.append(samples, [tmp], axis=0)
 
-    arms = optimization_algorithm(samples)
+    arms = mkcp_solver(samples)
     env.compute_rewards(arms)
 
     for j in range(config.n_subcampaigns):
@@ -78,8 +79,7 @@ for i in range(0, T):
             learners[j].update(arms[j], arm_reward)
 
 
-
-best_arms = optimization_algorithm(np.array(env.round()))
+best_arms = mkcp_solver(np.array(env.round()))
 env.compute_rewards(best_arms)
 y_clairvoyant = [sum([env.get_reward(j) for j in range(config.n_subcampaigns)]) for i in range(T)]
 
