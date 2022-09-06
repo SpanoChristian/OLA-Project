@@ -14,7 +14,7 @@ class GPTS_Learner(Learner):
         self.pulled_arms = []
         # default:
         # kernel = RBF(1.0, (1e-5, 1e5))
-        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2))
+        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-5, 1e5))
         # kernel = RBF(1.0, (1e-3, 1e3)) * ConstantKernel(1.0, (1e-3, 1e3))
         self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
                                            normalize_y=True, n_restarts_optimizer=9)

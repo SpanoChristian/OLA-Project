@@ -8,7 +8,7 @@ import warnings
 import matplotlib.gridspec as gridspec
 from utils.Optimization_Algorithm import *
 import matplotlib.pyplot as plt
-from utils.kanpsack import *
+from utils.knapsack import *
 import multiprocessing
 
 plt.ion()

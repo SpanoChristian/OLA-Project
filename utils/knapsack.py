@@ -62,7 +62,6 @@ def knapsack_optimizer(table):
 
     # pointer to the optimal budget column
     opt_col = opt_table[rows - 1].index(opt_value)
-
     # list of budget-pointers for each sub-campaign
     assignments = [0 for r in range(rows)]
 

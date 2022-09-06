@@ -1,7 +1,7 @@
 from Environments.Base_Environment import *
 from Learners.GPTS_Learner import *
 import logging
-from utils.kanpsack import *
+from utils.knapsack import *
 import warnings
 import matplotlib.gridspec as gridspec
 from utils.Optimization_Algorithm import *
@@ -33,7 +33,7 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 1.5, 200)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
 
 env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        alpha_bars=config.alpha_bars,
@@ -41,22 +41,22 @@ env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        opponent=config.opponent,
                        adj_matrix=config.adj_matrix,
                        budgets=config.budgets,
-                       daily_clicks=40000
+                       daily_clicks=100
                        )
 
-config.dont_update_before = 3
+config.dont_update_before = 1
 
 learners = []
 for i in range(0, len(config.alpha_bars)):
     learners.append(GPTS_Learner(arms=config.budgets))
 
-T = 35
-x = [[] for i in range(5)]
-y = [[] for i in range(5)]
-y_pred = [[] for i in range(5)]
+T = 40
+x = [[] for i in range(env.n_subcampaigns)]
+y = [[] for i in range(env.n_subcampaigns)]
+y_pred = [[] for i in range(env.n_subcampaigns)]
 x_pred = config.budgets
-sigmas = [[] for i in range(5)]
-gs = gridspec.GridSpec(1, 5)
+sigmas = [[] for i in range(env.n_subcampaigns)]
+gs = gridspec.GridSpec(1, env.n_subcampaigns)
 start = time.time()
 for i in range(0, T):
     samples = np.zeros(shape=(0, len(config.budgets)))
@@ -78,7 +78,10 @@ for i in range(0, T):
         else:
             learners[j].update(arms[j], arm_reward)
 
+gs = gridspec.GridSpec(1, 2)
+plt.figure(figsize=(13, 5))
 
+plt.subplot(gs[0, 0])
 best_arms = mkcp_solver(np.array(env.round()))
 env.compute_rewards(best_arms)
 y_clairvoyant = [sum([env.get_reward(j) for j in range(config.n_subcampaigns)]) for i in range(T)]
@@ -89,5 +92,16 @@ y = [sum([learner.collected_rewards[i] for learner in learners]) for i in range(
 plt.plot(x, y, label=u'GPTS reward')
 plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')
 
-plt.text(x=T * 0.75, y=np.average(y_clairvoyant) * 0.9, s=f'total time: {"{:.2f}".format(time.time() - start)}')
+plt.text(x=T * 0.75, y=np.max(y_clairvoyant) * 0.9, s=f'total time: {"{:.2f}".format(time.time() - start)}')
+
+plt.subplot(gs[0, 1])
+regret = []
+for i in range(len(x)):
+    aux = y_clairvoyant[i] - y[i] + (regret[-1] if i > 0 else 0)
+    regret.append(aux)
+
+plt.plot(x, regret)
+plt.text(x=T * 0.6, y=regret[-1] * 0.5, s=f'total regret: {"{:.2f}".format(regret[-1])}\n'
+                                                         f'total clicks: {"{:.2f}".format(sum(y))}')
+
 plt.show()
