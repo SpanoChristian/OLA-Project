@@ -66,7 +66,10 @@ n_arms:                     {config.n_arms},
 arms:                       {config.arms}
 ''')
 
-env = Environment(config.adj_matrix, 0.02, 1000)
+env = Environment5(config.adj_matrix, 0.02, 1000)
+
+
+
 
 for i in range(config.sub_campaigns):
     sc = Subcampaign(budgets=config.arms, function=lambda x: fun(x, config.alpha_bar[i], config.speeds[i]))

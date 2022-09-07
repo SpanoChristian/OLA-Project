@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from utils.config import *
 import time
 from utils.MKCP import *
+from Runner import *
 
 logging.basicConfig(level=logging.DEBUG)
 warnings.filterwarnings("ignore")
@@ -44,39 +45,11 @@ env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        daily_clicks=100
                        )
 
-config.dont_update_before = 1
-
-learners = []
-for i in range(0, len(config.alpha_bars)):
-    learners.append(GPTS_Learner(arms=config.budgets))
-
-T = 40
-x = [[] for i in range(env.n_subcampaigns)]
-y = [[] for i in range(env.n_subcampaigns)]
-y_pred = [[] for i in range(env.n_subcampaigns)]
-x_pred = config.budgets
-sigmas = [[] for i in range(env.n_subcampaigns)]
-gs = gridspec.GridSpec(1, env.n_subcampaigns)
+runner = Runner(environment=env, optimizer=mkcp_solver, lernerClass=GPTS_Learner, dont_update_before=1)
+T = 10
 start = time.time()
-for i in range(0, T):
-    samples = np.zeros(shape=(0, len(config.budgets)))
-    for learner in learners:
-        tmp = np.array(learner.pull_all_arms())
-        samples = np.append(samples, [tmp], axis=0)
+runner.run(T=T)
 
-    arms = mkcp_solver(samples)
-    env.compute_rewards(arms)
-
-    for j in range(config.n_subcampaigns):
-        arm_reward = env.get_reward(subcampaign=j)
-
-        x[j].append(arms[j])
-        y[j].append(arm_reward)
-
-        if i < config.dont_update_before:
-            learners[j].update_observations(arms[j], arm_reward)
-        else:
-            learners[j].update(arms[j], arm_reward)
 
 gs = gridspec.GridSpec(1, 2)
 plt.figure(figsize=(13, 5))
@@ -87,7 +60,7 @@ env.compute_rewards(best_arms)
 y_clairvoyant = [sum([env.get_reward(j) for j in range(config.n_subcampaigns)]) for i in range(T)]
 
 x = range(T)
-y = [sum([learner.collected_rewards[i] for learner in learners]) for i in range(T)]
+y = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]
 
 plt.plot(x, y, label=u'GPTS reward')
 plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')

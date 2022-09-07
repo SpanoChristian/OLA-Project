@@ -1,10 +1,11 @@
 import numpy as np
 from utils.graph_algorithm import get_graph_paths
 from utils.utils import *
+from Environments.Environment import *
 
 
-class Base_Environment:
-    def __init__(self, n_subcampaigns, alpha_bars, speeds, opponent, adj_matrix, budgets, daily_clicks):
+class Base_Environment(Environment):
+    def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, speeds, opponent, adj_matrix, budgets, daily_clicks):
         """
         Base environment to represent the simplest scenario where everything is well-defined
         :param n_subcampaigns: number of subcampaigns
@@ -15,6 +16,7 @@ class Base_Environment:
         :param adj_matrix: adjacency matrix of the connections between the subcampaigns
         :param budgets: budgets that will be pulled during the execution
         """
+        super().__init__(subcampaign_class)
         assert abs(sum(alpha_bars) + opponent - 1) < 0.00001
         self.n_subcampaigns = n_subcampaigns
         self.alpha_bars = alpha_bars
@@ -24,7 +26,7 @@ class Base_Environment:
         self.budgets = budgets
         self.daily_clicks = daily_clicks
 
-        self.subcampaigns = [Base_Subcampaign(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
+        self.subcampaigns = [subcampaign_class(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
                              for i in range(n_subcampaigns)]
         self.t = 0
         self.rewards = [0 for i in range(n_subcampaigns)]
@@ -67,7 +69,8 @@ class Base_Environment:
         # secondary clicks (that are automatically added inside self.round(...)
         k = [1 - sum(vals)]
         k.extend(np.array(vals))
-        self.rewards = (to_sum_1(np.array(k)) * self.daily_clicks)[1:]
+        k = (to_sum_1(np.array(k)) * self.daily_clicks)[1:]
+        self.rewards = [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
 
     def round(self, subcampaign=None, pulled_arm=None):
         """
@@ -80,7 +83,6 @@ class Base_Environment:
         """
         if subcampaign is not None:
             res = self.subcampaigns[subcampaign].round(arm_idx=pulled_arm)
-            res = self.get_all_clicks(subcampaign, res)
             return res
         else:
             res = []
@@ -89,7 +91,7 @@ class Base_Environment:
             return res
 
 
-class Base_Subcampaign:
+class Base_Subcampaign(Subcampaign):
     def __init__(self, budgets, alpha_bar, speed):
         """
         Class for modelling the behavior of a subcampaign
@@ -97,16 +99,18 @@ class Base_Subcampaign:
         :param alpha_bar: max_value reachable (from 0 to 1)
         :param speed: speed of the alpha-function
         """
+        super().__init__()
         assert 0 < alpha_bar < 1
         self.budgets = budgets
         self.alpha_bar = alpha_bar
         self.speed = speed
-        self.means = alpha_bar * (1.0 - np.exp(-budgets * speed))
+        self.min_val = 0.00001
+        self.means = np.maximum(alpha_bar * (1.0 - np.exp(-budgets * speed)), self.min_val)
 
     def update_means(self, alpha_bar, speed):
         self.alpha_bar = alpha_bar
         self.speed = speed
-        self.means = alpha_bar * (1.0 - np.exp(-self.budgets * speed))
+        self.means = np.maximum(alpha_bar * (1.0 - np.exp(-self.budgets * speed)), self.min_val)
 
     def round(self, arm_idx=None):
         if arm_idx is not None:
