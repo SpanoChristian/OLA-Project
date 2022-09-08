@@ -34,10 +34,8 @@ logging.debug("setting up parameters")
 
 if __name__ == '__main__':
 
-
     class Config(object):
         pass
-
 
     config = Config()
     config.sub_campaigns = 5
@@ -69,7 +67,7 @@ if __name__ == '__main__':
 
     learners = []
     for i in range(config.sub_campaigns):
-        learners.append(GPTS_Learner(arms=config.arms, n_arms=config.n_arms))
+        learners.append(GPTS_Learner(arms=config.arms))
 
 
     def compute_clairvoyant_reward():
@@ -81,7 +79,7 @@ if __name__ == '__main__':
         return clairvoyant_reward
 
 
-    T = 51
+    T = 20
     x = [[] for i in range(5)]
     y = [[] for i in range(5)]
     y_clairvoyant = []

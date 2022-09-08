@@ -6,7 +6,6 @@ class Environment:
     def __init__(self, adj_matrix, matrix_sigma, daily_clicks,
                  alpha_bar_low, alpha_bar_high, speed_low, speed_high,
                  opponent_mean, opponent_variance,
-
                  n_subcampaigns,
                  budgets,
                  phase_tau=40000):

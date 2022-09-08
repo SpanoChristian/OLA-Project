@@ -1,20 +1,13 @@
-from Environments.Base_Environment import *
-from Environments.Environment_step5 import *
-from Learners.GPTS_Learner import *
-import logging
-from utils.knapsack import *
-import warnings
-import matplotlib.gridspec as gridspec
-from utils.Optimization_Algorithm import *
-import matplotlib.pyplot as plt
 import time
-from utils.MKCP import *
-from Runner import *
 
-logging.basicConfig(level=logging.DEBUG)
-warnings.filterwarnings("ignore")
-logging.getLogger('matplotlib.pyplot').disabled = True
-logging.getLogger('matplotlib.font_manager').disabled = True
+import matplotlib.pyplot as plt
+from matplotlib import gridspec
+
+from Environments.Environment_step6_SW import *
+from Learners import SW_Learner
+from Learners.SW_Learner import *
+from Runner import Runner
+from utils.MKCP import mkcp_solver
 
 
 class Config(object):
@@ -36,19 +29,31 @@ config.adj_matrix = np.array([
 ])
 config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
 
-env = Environment5(n_subcampaigns=config.n_subcampaigns,
-                   subcampaign_class=Subcampaign5,
-                   alpha_bars=config.alpha_bars,
-                   multiplier=10000,
-                   speeds=config.speeds,
-                   opponent=config.opponent,
-                   adj_matrix=config.adj_matrix,
-                   sigma_matrix=0.001,
-                   budgets=config.budgets,
-                   daily_clicks=100
-                   )
 
-runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner, dont_update_before=1)
+window_factor = 2
+T = 1000
+window_size = window_factor*int(np.sqrt(T))
+# rows: phases, cols: arms
+p = np.array([[1, 1, 1, 1],
+             [0.2, 0.5, 0.2, 0.3],
+             [0.3, 0.2, 0.4, 0.5]])
+n_arms = p.shape[1]
+
+env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
+                           subcampaign_class=Subcampaign6,
+                           alpha_bars=config.alpha_bars,
+                           speeds=config.speeds,
+                           opponent=config.opponent,
+                           adj_matrix=config.adj_matrix,
+                           budgets=config.budgets,
+                           daily_clicks=100,
+                           n_arms=n_arms,
+                           probs_matrix=p,
+                           horizon=T
+                           )
+
+
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1)
 
 start = time.time()
 T = 40
