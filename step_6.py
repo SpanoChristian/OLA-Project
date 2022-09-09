@@ -1,6 +1,6 @@
 import time
 
-from Environments.Environment_ac import *
+from Environments.Environment_step6 import *
 from Learners.GPTS_Learner import *
 from Learners.GPUCB_Learner import *
 import logging
