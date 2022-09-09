@@ -21,6 +21,7 @@ class Runner:
             for learner in self.learners:
                 tmp = np.array(learner.pull_all_arms())
                 samples = np.append(samples, [tmp], axis=0)
+                self.environment.set_phase(learner.get_phase())
 
             arms = self.optimizer(samples)
             self.environment.compute_rewards(arms)

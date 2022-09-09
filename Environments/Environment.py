@@ -19,6 +19,15 @@ class Environment:
     def round(self, subcampaign=None, pulled_arm=None):
         raise NotImplementedError
 
+    '''
+        Added in order to update the time whenever the time in the Learner is updated
+    '''
+    def update_time(self, i):
+        pass
+
+    def set_phase(self, phase):
+        pass
+
 
 class Subcampaign:
     def __init__(self):

@@ -7,33 +7,53 @@ from Learners.Learner import Learner
 
 
 class SW_Learner(Learner):
-    def __init__(self, arms, window_size):
+    def __init__(self, arms, alpha=0.9):
         super().__init__(arms)
-        self.window_size = window_size
+        self.window_size = 15
         self.arms = arms
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
         self.pulled_arms = []
+        self.pulled_history = [[] for _ in range(len(arms))]
+        self.widths = [np.inf for _ in range(self.n_arms)]
+        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-5, 1e5))
+        # kernel = RBF(1.0, (1e-3, 1e3)) * ConstantKernel(1.0, (1e-3, 1e3))
+        self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
+                                           normalize_y=True, n_restarts_optimizer=9)
+        self.phase = 0
+        self.n_changes = 3
+        self.inner_horizon = 200/self.n_changes
 
     def update_observations(self, arm_idx, reward):
         super().update_observations(arm_idx, reward)
         self.pulled_arms.append(self.arms[arm_idx])
 
     def update_model(self):
-        super(SW_Learner, self).update_model()
+        x = np.atleast_2d(self.pulled_arms).T
+        y = self.collected_rewards
+        self.gp.fit(x, y)
+        self.means, self.sigmas = self.gp.predict(np.atleast_2d(self.arms).T, return_std=True)
+        self.sigmas = np.maximum(self.sigmas, 1e-2)
 
     def update(self, pulled_arm, reward):
         self.t += 1
-        self.means[pulled_arm] = np.mean(self.rewards_per_arm[pulled_arm])
-        for idx in range(self.n_arms):
-            n = len(self.rewards_per_arm[idx][-self.window_size:])
-            if n > 0:
-                self.widths[idx] = np.sqrt(2 * np.log(self.t) / n)
+        print(f"{(self.t / 200)*100}%")
+        if self.t > (self.phase + 1) * self.inner_horizon:
+            self.phase = min(self.phase+1, self.n_changes-1)
+        self.pulled_history[pulled_arm].append(1)
+        # Set to zero all the other arms that have not been played
+        self.arms_not_played(pulled_arm)
+        for idx_arm in range(self.n_arms):
+            if self.t < self.window_size:
+                n = sum(self.pulled_history[idx_arm][0:self.t])
             else:
-                self.widths[idx] = np.inf
+                n = sum(self.pulled_history[idx_arm][self.t-self.window_size:self.t])
+            if n > 0:
+                self.widths[idx_arm] = np.sqrt(2 * np.log(self.t) / n)
+            else:
+                self.widths[idx_arm] = np.inf
+        self.update_model()
         self.update_observations(pulled_arm, reward)
-        np.append(self.collected_rewards, reward)
-        self.rewards_per_arm[pulled_arm].append(reward)
 
     def pull_arm(self):
         idx = np.argmax(self.means + self.widths)   # UCB
@@ -42,3 +62,15 @@ class SW_Learner(Learner):
     def pull_all_arms(self):
         sampled_values = np.maximum(np.random.normal(self.means, self.sigmas), 0)
         return sampled_values
+
+    def arms_not_played(self, pulled_arm):
+        for arm in range(self.n_arms):
+            if arm != pulled_arm:
+                self.pulled_history[arm].append(0)
+
+    def get_current_t(self):
+        return self.t
+
+    def get_phase(self):
+        return self.phase
+
