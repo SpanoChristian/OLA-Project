@@ -28,7 +28,6 @@ class Base_Environment(Environment):
 
         self.subcampaigns = [subcampaign_class(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
                              for i in range(n_subcampaigns)]
-        self.t = 0
         self.rewards = [0 for i in range(n_subcampaigns)]
 
     def get_reward(self, subcampaign):
@@ -106,11 +105,6 @@ class Base_Subcampaign(Subcampaign):
         self.speed = speed
         self.min_val = 0.00001
         self.means = np.maximum(alpha_bar * (1.0 - np.exp(-budgets * speed)), self.min_val)
-
-    def update_means(self, alpha_bar, speed):
-        self.alpha_bar = alpha_bar
-        self.speed = speed
-        self.means = np.maximum(alpha_bar * (1.0 - np.exp(-self.budgets * speed)), self.min_val)
 
     def round(self, arm_idx=None):
         if arm_idx is not None:
