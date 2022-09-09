@@ -37,6 +37,7 @@ config.adj_matrix = np.array([
 config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
 
 env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
+                       subcampaign_class=Base_Subcampaign,
                        alpha_bars=config.alpha_bars,
                        speeds=config.speeds,
                        opponent=config.opponent,
@@ -45,8 +46,8 @@ env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        daily_clicks=100
                        )
 
-runner = Runner(environment=env, optimizer=mkcp_solver, lernerClass=GPTS_Learner, dont_update_before=1)
-T = 10
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner, dont_update_before=1)
+T = 100
 start = time.time()
 runner.run(T=T)
 
