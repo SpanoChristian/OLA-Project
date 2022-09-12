@@ -4,14 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7639da8e-9d97-4254-8fb5-d0c2cca26fa8" name="Changes" comment="Step 6 implementation">
+    <list default="true" id="7639da8e-9d97-4254-8fb5-d0c2cca26fa8" name="Changes" comment="Completing Step 6. UCB fix and phases added.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Environments/Environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Environments/Environment.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Environments/Environment_step6_SW.py" beforeDir="false" afterPath="$PROJECT_DIR$/Environments/Environment_step6_SW.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Learners/GPTS_Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/GPTS_Learner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Learners/Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/Learner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Learners/SW_Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/SW_Learner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/New_Step_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/New_Step_6.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/step5.py" beforeDir="false" afterPath="$PROJECT_DIR$/step5.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +83,7 @@
       <recent name="$PROJECT_DIR$/Learners" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.New_Step_6">
+  <component name="RunManager" selected="Python.step5">
     <configuration name="New_Step_6" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="OLAProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -192,10 +193,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.step5" />
         <item itemvalue="Python.New_Step_6" />
         <item itemvalue="Python.step3" />
         <item itemvalue="Python.step_6" />
-        <item itemvalue="Python.step5" />
         <item itemvalue="Python.scratch_5" />
       </list>
     </recent_temporary>
@@ -336,7 +337,21 @@
       <option name="project" value="LOCAL" />
       <updated>1662658114527</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Completing Step 6. UCB fix and phases added.">
+      <created>1662741650757</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1662741650757</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Completing Step 6. UCB fix and phases added.">
+      <created>1662743903564</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1662743903564</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -378,7 +393,8 @@
     <MESSAGE value="mkcp" />
     <MESSAGE value="mkcp speed up" />
     <MESSAGE value="Step 6 implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Step 6 implementation" />
+    <MESSAGE value="Completing Step 6. UCB fix and phases added." />
+    <option name="LAST_COMMIT_MESSAGE" value="Completing Step 6. UCB fix and phases added." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

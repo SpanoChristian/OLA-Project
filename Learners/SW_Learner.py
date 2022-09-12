@@ -7,9 +7,9 @@ from Learners.Learner import Learner
 
 
 class SW_Learner(Learner):
-    def __init__(self, arms, alpha=0.9):
+    def __init__(self, arms, alpha=0.9, n_changes=3):
         super().__init__(arms)
-        self.window_size = 15
+        self.window_size = 5
         self.arms = arms
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
@@ -21,8 +21,9 @@ class SW_Learner(Learner):
         self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
                                            normalize_y=True, n_restarts_optimizer=9)
         self.phase = 0
-        self.n_changes = 3
-        self.inner_horizon = 200/self.n_changes
+        self.n_changes = n_changes
+        self.horizon = 100
+        self.inner_horizon = self.horizon/self.n_changes
 
     def update_observations(self, arm_idx, reward):
         super().update_observations(arm_idx, reward)
@@ -37,8 +38,10 @@ class SW_Learner(Learner):
 
     def update(self, pulled_arm, reward):
         self.t += 1
-        print(f"{(self.t / 200)*100}%")
+        print(f"{(self.t / 10)*100}%")
+        print(f"{self.t} > {self.phase + 1} * {self.inner_horizon}")
         if self.t > (self.phase + 1) * self.inner_horizon:
+            #print(f"{self.t} > {self.phase + 1} * {self.inner_horizon}")
             self.phase = min(self.phase+1, self.n_changes-1)
         self.pulled_history[pulled_arm].append(1)
         # Set to zero all the other arms that have not been played
@@ -74,3 +77,5 @@ class SW_Learner(Learner):
     def get_phase(self):
         return self.phase
 
+    def set_horizon(self, horizon):
+        self.horizon = horizon

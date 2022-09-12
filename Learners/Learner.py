@@ -26,3 +26,6 @@ class Learner:
 
     def get_phase(self):
         pass
+
+    def set_horizon(self, horizon):
+        pass

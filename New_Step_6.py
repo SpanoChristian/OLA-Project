@@ -31,7 +31,7 @@ config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 100)
 
 
 window_factor = 2
-T = 200
+T = 300
 window_size = window_factor*int(np.sqrt(T))
 # rows: phases, cols: arms
 p = np.array([np.ones(100),
@@ -53,7 +53,7 @@ env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
                            )
 
 
-runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1)
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1, n_changes=2)
 
 start = time.time()
 runner.run(T)

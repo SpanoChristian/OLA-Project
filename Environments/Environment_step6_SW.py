@@ -6,7 +6,7 @@ from Environments.Base_Environment import *
 
 class Environment_step6_SW(Base_Environment):
     def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, speeds, opponent, adj_matrix, budgets,
-                 daily_clicks, n_arms, probs_matrix, horizon):
+                 daily_clicks, n_arms, probs_matrix, horizon=100, n_changes=3):
         super().__init__(n_subcampaigns, subcampaign_class, np.array(alpha_bars), speeds, opponent, adj_matrix,
                          budgets, daily_clicks)
         self.n_arms = n_arms
