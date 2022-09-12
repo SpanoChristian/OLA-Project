@@ -2,12 +2,9 @@ from Environments.Base_Environment import *
 from Environments.Environment_step5 import *
 from Learners.GPTS_Learner import *
 import logging
-from utils.knapsack import *
 import warnings
 import matplotlib.gridspec as gridspec
-from utils.Optimization_Algorithm import *
 import matplotlib.pyplot as plt
-import time
 from utils.MKCP import *
 from Runner import *
 
@@ -48,7 +45,7 @@ env = Environment5(n_subcampaigns=config.n_subcampaigns,
                    daily_clicks=100
                    )
 
-runner = Runner(environment=env, optimizer=mkcp_solver, lernerClass=GPTS_Learner)
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
 
 start = time.time()
 T = 40

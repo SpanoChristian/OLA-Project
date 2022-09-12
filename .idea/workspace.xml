@@ -4,13 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7639da8e-9d97-4254-8fb5-d0c2cca26fa8" name="Changes" comment="fix vari e refactor">
+    <list default="true" id="7639da8e-9d97-4254-8fb5-d0c2cca26fa8" name="Changes" comment="Completing Step 6. UCB fix and phases added.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Environments/Base_Environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/Environments/Base_Environment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Environments/Environment_ac.py" beforeDir="false" afterPath="$PROJECT_DIR$/Environments/Environment_step6.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Environments/Environment_step6_SW.py" beforeDir="false" afterPath="$PROJECT_DIR$/Environments/Environment_step6_SW.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Learners/GPTS_Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/GPTS_Learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Learners/Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/Learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Learners/SW_Learner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Learners/SW_Learner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/New_Step_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/New_Step_6.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/step5.py" beforeDir="false" afterPath="$PROJECT_DIR$/step5.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/step_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/step_6.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,9 +36,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file:///Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.8/lib/python3.8/json/decoder.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/Environments/Environment_ac.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Environments/Environment_step5.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Environments/Environment_step6.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Learners/GPTS_Learner.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Learners/GPUCB_Learner.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/step3.py" root0="FORCE_HIGHLIGHTING" />
@@ -44,7 +45,6 @@
     <setting file="file://$PROJECT_DIR$/useful_scripts/Learner_Clicks.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/useful_scripts/Learner_Clicks_Budget.py" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/utils/config.py" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/venv/lib/python3.8/site-packages/notebook/notebookapp.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -64,7 +64,7 @@
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   },
   &quot;keyToStringList&quot;: {
     &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
@@ -84,30 +84,8 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.step5">
-    <configuration name="MKCP" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="OLA-Project" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/utils" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/MKCP.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Runner" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="OLA-Project" />
+    <configuration name="New_Step_6" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="OLAProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -118,8 +96,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Runner.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/New_Step_6.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -151,15 +128,15 @@
       <method v="2" />
     </configuration>
     <configuration name="step3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="OLA-Project" />
+      <module name="OLAProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="$PROJECT_DIR$/venv/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
@@ -173,7 +150,7 @@
       <method v="2" />
     </configuration>
     <configuration name="step5" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="OLA-Project" />
+      <module name="OLAProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -184,8 +161,28 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/step5.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="step_6" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="OLAProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/step_6.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -197,10 +194,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.step5" />
-        <item itemvalue="Python.scratch_5" />
+        <item itemvalue="Python.New_Step_6" />
         <item itemvalue="Python.step3" />
-        <item itemvalue="Python.Runner" />
-        <item itemvalue="Python.MKCP" />
+        <item itemvalue="Python.step_6" />
+        <item itemvalue="Python.scratch_5" />
       </list>
     </recent_temporary>
   </component>
@@ -247,8 +244,7 @@
       <workItem from="1662452714643" duration="602000" />
       <workItem from="1662453919999" duration="2000" />
       <workItem from="1662453933273" duration="3000" />
-      <workItem from="1662453939043" duration="21678000" />
-      <workItem from="1662575602115" duration="4862000" />
+      <workItem from="1662453939043" duration="20398000" />
     </task>
     <task id="LOCAL-00004" summary="partial">
       <created>1660840616785</created>
@@ -334,21 +330,28 @@
       <option name="project" value="LOCAL" />
       <updated>1662463371792</updated>
     </task>
-    <task id="LOCAL-00016" summary="fix vari e refactor">
-      <created>1662549059655</created>
+    <task id="LOCAL-00016" summary="Step 6 implementation">
+      <created>1662658114527</created>
       <option name="number" value="00016" />
       <option name="presentableId" value="LOCAL-00016" />
       <option name="project" value="LOCAL" />
-      <updated>1662549059655</updated>
+      <updated>1662658114527</updated>
     </task>
-    <task id="LOCAL-00017" summary="fix vari e refactor">
-      <created>1662549087430</created>
+    <task id="LOCAL-00017" summary="Completing Step 6. UCB fix and phases added.">
+      <created>1662741650757</created>
       <option name="number" value="00017" />
       <option name="presentableId" value="LOCAL-00017" />
       <option name="project" value="LOCAL" />
-      <updated>1662549087430</updated>
+      <updated>1662741650757</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Completing Step 6. UCB fix and phases added.">
+      <created>1662743903564</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1662743903564</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -389,8 +392,9 @@
     <MESSAGE value="refactored step 3" />
     <MESSAGE value="mkcp" />
     <MESSAGE value="mkcp speed up" />
-    <MESSAGE value="fix vari e refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix vari e refactor" />
+    <MESSAGE value="Step 6 implementation" />
+    <MESSAGE value="Completing Step 6. UCB fix and phases added." />
+    <option name="LAST_COMMIT_MESSAGE" value="Completing Step 6. UCB fix and phases added." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -411,9 +415,13 @@
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Environments/Environment_step4.py</url>
-          <line>29</line>
-          <option name="timeStamp" value="261" />
+          <url>file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="141" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/step5.py</url>
+          <option name="timeStamp" value="263" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -424,29 +432,5 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/OLA_Project$Learner_Clicks.coverage" NAME="Learner_Clicks Coverage Results" MODIFIED="1660667507709" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$new_step3.coverage" NAME="new_step3 Coverage Results" MODIFIED="1659976671000" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$config.coverage" NAME="config Coverage Results" MODIFIED="1661263047305" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/OLA_Project$scratch_3.coverage" NAME="scratch_3 Coverage Results" MODIFIED="1661789315903" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/OLA_Project$test.coverage" NAME="test Coverage Results" MODIFIED="1661072842275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$scratch.coverage" NAME="scratch Coverage Results" MODIFIED="1661263090350" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/OLA_Project$step3.coverage" NAME="step3 Coverage Results" MODIFIED="1662542947485" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$GPTS_Learner.coverage" NAME="GPTS_Learner Coverage Results" MODIFIED="1659775002424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$knapsack.coverage" NAME="knapsack Coverage Results" MODIFIED="1662455536648" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/OLA_Project$Environment_step5.coverage" NAME="Environment_step5 Coverage Results" MODIFIED="1661181262590" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$plot_gpr_noisy_targets.coverage" NAME="plot_gpr_noisy_targets Coverage Results" MODIFIED="1661262506739" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$kanpsack.coverage" NAME="kanpsack Coverage Results" MODIFIED="1659625932230" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$MKCP.coverage" NAME="MKCP Coverage Results" MODIFIED="1662458148000" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/OLA_Project$Runner.coverage" NAME="Runner Coverage Results" MODIFIED="1662542593922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$scratch_2.coverage" NAME="scratch_2 Coverage Results" MODIFIED="1661677164584" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/OLA_Project$step_6.coverage" NAME="step_6 Coverage Results" MODIFIED="1661693176108" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$Try.coverage" NAME="Try Coverage Results" MODIFIED="1659797005622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$graph_algorithm.coverage" NAME="graph_algorithm Coverage Results" MODIFIED="1661178797495" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$step5.coverage" NAME="step5 Coverage Results" MODIFIED="1662740801239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/OLA_Project$GPUCB_Learner.coverage" NAME="GPUCB_Learner Coverage Results" MODIFIED="1661263179829" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Learners" />
-    <SUITE FILE_PATH="coverage/OLA_Project$scratch_5.coverage" NAME="scratch_5 Coverage Results" MODIFIED="1662549040684" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/OLA_Project$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1661615100977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
   </component>
 </project>

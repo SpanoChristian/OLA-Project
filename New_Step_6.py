@@ -27,16 +27,16 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 100)
 
 
 window_factor = 2
-T = 1000
+T = 300
 window_size = window_factor*int(np.sqrt(T))
 # rows: phases, cols: arms
-p = np.array([[1, 1, 1, 1],
-             [0.2, 0.5, 0.2, 0.3],
-             [0.3, 0.2, 0.4, 0.5]])
+p = np.array([np.ones(100),
+             np.random.rand(100),
+             np.ones(100)])
 n_arms = p.shape[1]
 
 env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
@@ -53,10 +53,9 @@ env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
                            )
 
 
-runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1)
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1, n_changes=2)
 
 start = time.time()
-T = 40
 runner.run(T)
 
 gs = gridspec.GridSpec(1, 2)

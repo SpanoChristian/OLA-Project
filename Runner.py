@@ -4,17 +4,19 @@ from Environments.Environment import *
 
 
 class Runner:
-    def __init__(self, environment: Environment, optimizer, lernerClass, **learnerArgs):
+    def __init__(self, environment: Environment, optimizer, learnerClass, dont_update_before=0, **learnerArgs):
         self.environment: Environment = environment
         self.optimizer = optimizer
-        self.lernerClass = lernerClass
+        self.learnerClass = learnerClass
         self.learnerArgs = learnerArgs
-        self.dont_update_before = 1
+        self.dont_update_before = dont_update_before
         self.learners = []
 
     def run(self, T=40):
+
         for i in range(0, len(self.environment.alpha_bars)):
-            learner: Learner = self.lernerClass(self.environment.budgets, **self.learnerArgs)
+            learner: Learner = self.learnerClass(self.environment.budgets, **self.learnerArgs)
+            learner.set_horizon(T)
             self.learners.append(learner)
 
         for i in range(0, T):
@@ -22,6 +24,7 @@ class Runner:
             for learner in self.learners:
                 tmp = np.array(learner.pull_all_arms())
                 samples = np.append(samples, [tmp], axis=0)
+                self.environment.set_phase(learner.get_phase())
 
             arms = self.optimizer(samples)
             self.environment.compute_rewards(arms)
