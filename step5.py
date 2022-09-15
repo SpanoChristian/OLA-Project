@@ -31,12 +31,12 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 50)
 
 env = Environment5(n_subcampaigns=config.n_subcampaigns,
                    subcampaign_class=Subcampaign5,
                    alpha_bars=config.alpha_bars,
-                   multiplier=1000,
+                   multiplier=100000000,
                    speeds=config.speeds,
                    opponent=config.opponent,
                    adj_matrix=config.adj_matrix,
@@ -48,7 +48,7 @@ env = Environment5(n_subcampaigns=config.n_subcampaigns,
 runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
 
 start = time.time()
-T = 40
+T = 80
 runner.run(T)
 
 gs = gridspec.GridSpec(1, 2)
@@ -56,8 +56,8 @@ plt.figure(figsize=(13, 5))
 
 plt.subplot(gs[0, 0])
 best_arms = mkcp_solver(np.array(env.round()))
-env.compute_rewards(best_arms)
-y_clairvoyant = [sum([env.get_reward(j) for j in range(env.n_subcampaigns)]) for i in range(T)]
+rewards = env.compute_rewards(best_arms)
+y_clairvoyant = [sum([rewards[j] for j in range(env.n_subcampaigns)]) for i in range(T)]
 
 x = range(T)
 y = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]

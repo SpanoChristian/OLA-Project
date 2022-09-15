@@ -31,13 +31,12 @@ config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 100)
 
 
 window_factor = 2
-T = 300
+T = 1000
 window_size = window_factor*int(np.sqrt(T))
 # rows: phases, cols: arms
 p = np.array([np.ones(100),
              np.random.rand(100),
              np.ones(100)])
-n_arms = p.shape[1]
 
 env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
                            subcampaign_class=Subcampaign6,
@@ -47,7 +46,6 @@ env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
                            adj_matrix=config.adj_matrix,
                            budgets=config.budgets,
                            daily_clicks=100,
-                           n_arms=n_arms,
                            probs_matrix=p,
                            horizon=T
                            )
@@ -63,8 +61,8 @@ plt.figure(figsize=(13, 5))
 
 plt.subplot(gs[0, 0])
 best_arms = mkcp_solver(np.array(env.round()))
-env.compute_rewards(best_arms)
-y_clairvoyant = [sum([env.get_reward(j) for j in range(env.n_subcampaigns)]) for i in range(T)]
+rewards = env.compute_rewards(best_arms)
+y_clairvoyant = [sum([rewards[j] for j in range(env.n_subcampaigns)]) for i in range(T)]
 
 x = range(T)
 y = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]

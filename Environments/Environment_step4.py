@@ -6,9 +6,9 @@ from Environments.Base_Environment import *
 class Environment4(Base_Environment):
     def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, multiplier, speeds, opponent, adj_matrix, budgets,
                  daily_clicks):
+        self.multiplier = multiplier
         super().__init__(n_subcampaigns, subcampaign_class, np.array(alpha_bars), speeds, opponent, adj_matrix,
                          budgets, daily_clicks)
-        self.multiplier = multiplier
 
     def compute_rewards(self, pulled_arms):
         """
@@ -26,10 +26,8 @@ class Environment4(Base_Environment):
         k = [1 - sum(vals)]
         k.extend(np.array(vals))
         k = np.array(k) * self.multiplier
-        if any(i <= 0 for i in k):
-            print('a')
-        k = np.random.dirichlet(k)[1:] * self.daily_clicks
-        self.rewards = [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
+        k = (np.random.dirichlet(k) * self.daily_clicks)[1:]
+        return [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
 
 
 class Subcampaign4(Base_Subcampaign):

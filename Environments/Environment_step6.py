@@ -7,20 +7,37 @@ class Environment6(Environment5):
     def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, multiplier, speeds, opponent, adj_matrix,
                  sigma_matrix, budgets,
                  daily_clicks, phase):
+        self.t = 0
+        self.phase = phase
+        self.optimal = []
+        self.changed = False
+
         super().__init__(n_subcampaigns, subcampaign_class, alpha_bars, multiplier, speeds, opponent, adj_matrix,
                          sigma_matrix, budgets,
                          daily_clicks)
-        self.phase = phase
-        self.t = 0
+
+        self.optimal_sol = mkcp_solver(self.round())
+        rewards = super().compute_rewards(self.optimal_sol)
+        self.optimal_sol_reward = sum([rewards[j] for j in range(self.n_subcampaigns)])
+        self.optimal.append({'sol': self.optimal_sol, 'reward': self.optimal_sol_reward, 'start_from': self.t})
 
     def get_new_subcampaigns(self):
-        pass
+        new_alpha_bar = np.random.dirichlet([0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
+        self.opponent = new_alpha_bar[0]
+        self.speeds = [np.random.uniform(0.001, 40) for i in range(self.n_subcampaigns)]
+        for i, subcampaign in enumerate(self.subcampaigns):
+            subcampaign.update_means(new_alpha_bar[i + 1], self.speeds[i])
 
     def compute_rewards(self, pulled_arms):
-        self.t += 1
-        if self.t % self.phase == 0:
+        if self.t > 0 and self.t % self.phase == 0 and not self.changed:
+            self.changed = True
             self.get_new_subcampaigns()
-        super().compute_rewards(pulled_arms)
+            self.optimal_sol = mkcp_solver(self.round())
+            rewards = super().compute_rewards(self.optimal_sol)
+            self.optimal_sol_reward = sum([rewards[j] for j in range(self.n_subcampaigns)])
+            self.optimal.append({'sol': self.optimal_sol, 'reward': self.optimal_sol_reward, 'start_from': self.t})
+
+        return super().compute_rewards(pulled_arms)
 
     def get_all_clicks(self, subcampaign, clicks):
         """
@@ -41,4 +58,3 @@ class Subcampaign5(Subcampaign4):
         self.alpha_bar = alpha_bar
         self.speed = speed
         self.means = np.maximum(alpha_bar * (1.0 - np.exp(-self.budgets * speed)), self.min_val)
-

@@ -13,6 +13,9 @@ class Environment:
     def get_all_clicks(self, subcampaign, clicks):
         raise NotImplementedError
 
+    def next_day(self):
+        raise NotImplementedError
+
     def compute_rewards(self, pulled_arms):
         raise NotImplementedError
 

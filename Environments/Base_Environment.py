@@ -2,6 +2,7 @@ import numpy as np
 from utils.graph_algorithm import get_graph_paths
 from utils.utils import *
 from Environments.Environment import *
+from utils.MKCP import *
 
 
 class Base_Environment(Environment):
@@ -28,10 +29,14 @@ class Base_Environment(Environment):
 
         self.subcampaigns = [subcampaign_class(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
                              for i in range(n_subcampaigns)]
-        self.rewards = [0 for i in range(n_subcampaigns)]
 
-    def get_reward(self, subcampaign):
-        return self.rewards[subcampaign]
+        # compute clairvoyant sol
+
+        self.optimal_sol = mkcp_solver(self.round())
+        rewards = self.compute_rewards(self.optimal_sol)
+        self.optimal_sol_reward = sum([rewards[j] for j in range(self.n_subcampaigns)])
+
+        # reset state
 
     def get_all_clicks(self, subcampaign, clicks):
         """
@@ -69,7 +74,7 @@ class Base_Environment(Environment):
         k = [1 - sum(vals)]
         k.extend(np.array(vals))
         k = (to_sum_1(np.array(k)) * self.daily_clicks)[1:]
-        self.rewards = [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
+        return [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
 
     def round(self, subcampaign=None, pulled_arm=None):
         """
@@ -89,7 +94,8 @@ class Base_Environment(Environment):
                 res.append(self.round(subcampaign, pulled_arm))
             return res
 
-
+    def next_day(self):
+        self.t += 1
 class Base_Subcampaign(Subcampaign):
     def __init__(self, budgets, alpha_bar, speed):
         """

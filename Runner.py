@@ -1,10 +1,10 @@
 import numpy as np
 from Learners.Learner import *
 from Environments.Environment import *
-
+from Learners.GPTS_Learner import *
 
 class Runner:
-    def __init__(self, environment: Environment, optimizer, learnerClass, dont_update_before=0, **learnerArgs):
+    def __init__(self, environment: Environment, optimizer, learnerClass, dont_update_before=1, **learnerArgs):
         self.environment: Environment = environment
         self.optimizer = optimizer
         self.learnerClass = learnerClass
@@ -27,12 +27,16 @@ class Runner:
                 self.environment.set_phase(learner.get_phase())
 
             arms = self.optimizer(samples)
-            self.environment.compute_rewards(arms)
+            rewards = self.environment.compute_rewards(arms)
+
+
 
             for j in range(self.environment.n_subcampaigns):
-                arm_reward = self.environment.get_reward(subcampaign=j)
+                arm_reward = rewards[j]
 
                 if i < self.dont_update_before:
                     self.learners[j].update_observations(arms[j], arm_reward)
                 else:
                     self.learners[j].update(arms[j], arm_reward)
+
+            self.environment.next_day()
