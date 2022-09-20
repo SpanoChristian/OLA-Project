@@ -34,7 +34,7 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 300)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 20)
 
 env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        subcampaign_class=Base_Subcampaign,
@@ -47,7 +47,7 @@ env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        )
 
 runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner, dont_update_before=1)
-T = 100
+T = 40
 start = time.time()
 runner.run(T=T)
 
@@ -57,8 +57,8 @@ plt.figure(figsize=(13, 5))
 
 plt.subplot(gs[0, 0])
 best_arms = mkcp_solver(np.array(env.round()))
-env.compute_rewards(best_arms)
-y_clairvoyant = [sum([env.get_reward(j) for j in range(config.n_subcampaigns)]) for i in range(T)]
+clairvoyant = sum(env.compute_rewards(best_arms))
+y_clairvoyant = [clairvoyant for _ in range(T)]
 
 x = range(T)
 y = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]
@@ -76,6 +76,6 @@ for i in range(len(x)):
 
 plt.plot(x, regret)
 plt.text(x=T * 0.6, y=regret[-1] * 0.5, s=f'total regret: {"{:.2f}".format(regret[-1])}\n'
-                                                         f'total clicks: {"{:.2f}".format(sum(y))}')
+                                          f'total clicks: {"{:.2f}".format(sum(y))}')
 
 plt.show()

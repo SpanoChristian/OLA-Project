@@ -32,12 +32,12 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 15)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 20)
 
 env = Environment5(n_subcampaigns=config.n_subcampaigns,
                    subcampaign_class=Subcampaign5,
                    alpha_bars=config.alpha_bars,
-                   multiplier=1000,
+                   multiplier=10000,
                    speeds=config.speeds,
                    opponent=config.opponent,
                    adj_matrix=config.adj_matrix,
@@ -49,7 +49,7 @@ env = Environment5(n_subcampaigns=config.n_subcampaigns,
 runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
 
 start = time.time()
-T = 15
+T = 40
 runner.run(T)
 
 gs = gridspec.GridSpec(1, 2)
