@@ -13,12 +13,12 @@ class GP_UCB_Learner(Learner):
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
         self.nt = [0.0001 for i in range(0, self.n_arms)]
-        self.beta = [1.0 for i in range(0, self.n_arms)]
+        self.beta = [100.0 for i in range(0, self.n_arms)]
 
         self.pulled_arms = []
         # default:
         # kernel = RBF(1.0, (1e-5, 1e5))
-        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-2, 1e2))
+        kernel = RBF(length_scale=1.0, length_scale_bounds=(1e-5, 1e5))
         # kernel = RBF(1.0, (1e-3, 1e3)) * ConstantKernel(1.0, (1e-3, 1e3))
         self.gp = GaussianProcessRegressor(kernel=kernel, alpha=alpha ** 2,
                                            normalize_y=True, n_restarts_optimizer=9)
@@ -46,8 +46,8 @@ class GP_UCB_Learner(Learner):
         self.update_betas()
 
     def pull_arm(self):
-        sampled_values = np.argmax(self.means + self.sigmas * self.beta)
-        return sampled_values
+        sampled_value = np.argmax(self.means + self.sigmas * self.beta)
+        return sampled_value
 
     def pull_all_arms(self):
-        return sampled_values
+        return self.means + self.sigmas * self.beta

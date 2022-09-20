@@ -95,15 +95,10 @@ class Context:
             context0_features = features.copy()
             context1_features = features.copy()
             context0_features[index].value = non_assigned_features[0].values[0]
-            remaining_values = non_assigned_features[0].values[1:]
+            context1_features[index].value = non_assigned_features[0].values[1]
 
-            if len(remaining_values) > 1:
-                context1_features[index].values = non_assigned_features[0].values[1:]
-            elif len(remaining_values) == 0:
-                context1_features[index].value = non_assigned_features[0].values[1]
-            else:
-                raise Exception('devono esserci sempre almeno due valori')
-            return [Context(context0_features, self.probability*), Context(context1_features)]
+            return [Context(context0_features, self.probability * context0_features[index].probabilities[0]),
+                    Context(context1_features, self.probability * context1_features[index].probabilities[1])]
         else:
             return []
 
