@@ -47,7 +47,7 @@ env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
                        )
 
 runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner, dont_update_before=1)
-T = 40
+T = 100
 start = time.time()
 runner.run(T=T)
 
@@ -56,7 +56,9 @@ gs = gridspec.GridSpec(1, 2)
 plt.figure(figsize=(13, 5))
 
 plt.subplot(gs[0, 0])
-best_arms = mkcp_solver(np.array(env.round()))
+matrix = env.round()
+matrix = [row*env.get_all_clicks(i, 1) for i, row in enumerate(matrix)]
+best_arms = mkcp_solver(np.array(matrix))
 clairvoyant = sum(env.compute_rewards(best_arms))
 y_clairvoyant = [clairvoyant for _ in range(T)]
 
