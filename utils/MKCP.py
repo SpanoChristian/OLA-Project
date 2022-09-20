@@ -10,8 +10,9 @@ a = [
     [30, 45, 50, 66, 76, 82, 90, 106, 119, 121, 137],
     [50, 69, 73, 85, 91, 105, 116, 128, 133, 145, 152],
 ]
-
-a = np.array([[30 + 20 * i + j * 10 + np.random.randint(0, 10) for j in range(200)] for i in range(5)])
+n_arms = 200
+n_subcampaigns = 5
+a = np.array([[30 + 20 * i + j * 10 + np.random.randint(0, 10) for j in range(n_arms)] for i in range(n_subcampaigns)])
 
 
 def is_feasible(sol, budget):

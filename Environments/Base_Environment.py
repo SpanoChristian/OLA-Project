@@ -6,7 +6,8 @@ from utils.MKCP import *
 
 
 class Base_Environment(Environment):
-    def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, speeds, opponent, adj_matrix, budgets, daily_clicks):
+    def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, speeds, opponent, adj_matrix, budgets,
+                 daily_clicks):
         """
         Base environment to represent the simplest scenario where everything is well-defined
         :param n_subcampaigns: number of subcampaigns
@@ -26,17 +27,12 @@ class Base_Environment(Environment):
         self.adj_matrix = adj_matrix
         self.budgets = budgets
         self.daily_clicks = daily_clicks
-
+        self.t = 0
         self.subcampaigns = [subcampaign_class(budgets, alpha_bar=alpha_bars[i], speed=speeds[i])
                              for i in range(n_subcampaigns)]
 
-        # compute clairvoyant sol
-
-        self.optimal_sol = mkcp_solver(self.round())
-        rewards = self.compute_rewards(self.optimal_sol)
-        self.optimal_sol_reward = sum([rewards[j] for j in range(self.n_subcampaigns)])
-
-        # reset state
+    def reset(self):
+        self.t = 0
 
     def get_all_clicks(self, subcampaign, clicks):
         """
@@ -96,6 +92,8 @@ class Base_Environment(Environment):
 
     def next_day(self):
         self.t += 1
+
+
 class Base_Subcampaign(Subcampaign):
     def __init__(self, budgets, alpha_bar, speed):
         """

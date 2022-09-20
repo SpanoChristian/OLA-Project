@@ -34,74 +34,80 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 1.2, 10)
+max_budget = sum(5 / np.array(config.speeds)) / 1.2
+config.budgets = np.linspace(max_budget*0.05, max_budget*0.95, 40)
 
-env = Environment6(n_subcampaigns=config.n_subcampaigns,
-                   subcampaign_class=Subcampaign5,
-                   alpha_bars=config.alpha_bars,
-                   multiplier=100000,
-                   speeds=config.speeds,
-                   opponent=config.opponent,
-                   adj_matrix=config.adj_matrix,
-                   sigma_matrix=0.001,
-                   budgets=config.budgets,
-                   daily_clicks=100,
-                   phase=40
-                   )
 
-# runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
-# [CD_GPUCB_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
-learners = [
-            [GPTS_Learner(env.budgets) for _ in range(env.n_subcampaigns)]]
+while True:
+    env = Environment6(n_subcampaigns=config.n_subcampaigns,
+                       subcampaign_class=Subcampaign5,
+                       alpha_bars=config.alpha_bars,
+                       multiplier=100000,
+                       speeds=config.speeds,
+                       opponent=config.opponent,
+                       adj_matrix=config.adj_matrix,
+                       sigma_matrix=0.001,
+                       budgets=config.budgets,
+                       daily_clicks=100,
+                       phase=40
+                       )
+    # [CD_GPUCB_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
 
-runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
-start = time.time()
-T = 100
-runner.run(T)
+    learners = [
 
-gs = gridspec.GridSpec(1, 2)
-plt.figure(figsize=(13, 5))
+                   [GPTS_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
+        # [CD_GPUCB_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
 
-plt.subplot(gs[0, 0])
-y_clairvoyant = [phase['reward']
-                 for i, phase in enumerate(env.optimal)
-                 for _ in
-                 range((env.optimal[i + 1]['start_from'] if i < len(env.optimal) - 1 else T) - phase['start_from'])
-                 ]
-x = range(T)
-y = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]
-# y2 = [sum([learner.collected_rewards[i] for learner in runner.learners[1]]) for i in range(T)]
+    ]
+    runner = ComparisonRunner(environment=env, optimizer=mkcp_solver, learners=learners)
+    start = time.time()
+    T = 70
+    runner.run(T)
 
-plt.plot(x, y, color='blue', label=u'GPTS reward')
-# plt.plot(x, y2, color='red', label=u'GPTS reward')
+    gs = gridspec.GridSpec(1, 2)
+    plt.figure(figsize=(13, 5))
 
-# changes = []
-# for learner in runner.learners[0]:
-#     for change in learner.changes:
-#         changes.append(change)
-# if len(changes) > 0:
-#     count = np.array([[change, float(changes.count(change))] for change in list(set(changes))])
-#     count[:, 1] = count[:, 1]/float(np.linalg.norm(count[:, 1]))
-#     for item in count:
-#         plt.axvline(item[0], color=[0, 150/255.0, 0, item[1]])
-#
-plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')
+    plt.subplot(gs[0, 0])
+    y_clairvoyant = [phase['reward']
+                     for i, phase in enumerate(env.optimal)
+                     for _ in
+                     range((env.optimal[i + 1]['start_from'] if i < len(env.optimal) - 1 else T) - phase['start_from'])
+                     ]
+    x = range(T)
+    # y = [sum([learner.collected_rewards[i] for learner in runner.learners[0]]) for i in range(T)]
+    y2 = [sum([learner.collected_rewards[i] for learner in runner.learners[0]]) for i in range(T)]
 
-plt.text(x=T * 0.75, y=np.max(y_clairvoyant) * 0.9, s=f'total time: {"{:.2f}".format(time.time() - start)}')
+    # plt.plot(x, y, color='blue', label=u'GPTS reward')
+    plt.plot(x, y2, color='red', label=u'GPTS reward')
+    #
+    # changes = []
+    # for learner in runner.learners[0]:
+    #     for change in learner.changes:
+    #         changes.append(change)
+    # if len(changes) > 0:
+    #     count = np.array([[change, float(changes.count(change))] for change in list(set(changes))])
+    #     count[:, 1] = count[:, 1]/float(np.linalg.norm(count[:, 1]))
+    #     for item in count:
+    #         plt.axvline(item[0], color=[0, 150/255.0, 0, item[1]])
 
-plt.subplot(gs[0, 1])
-regret = []
-regret2 = []
-for i in range(len(x)):
-    aux = y_clairvoyant[i] - y[i] + (regret[-1] if i > 0 else 0)
-    regret.append(aux)
-    # aux = y_clairvoyant[i] - y2[i] + (regret2[-1] if i > 0 else 0)
-    # regret2.append(aux)
+    plt.plot(x, y_clairvoyant, label=u'Clairvoyant reward')
 
-plt.plot(x, regret, color='blue')
-# plt.plot(x, regret2, color='red')
+    plt.text(x=T * 0.75, y=np.max(y_clairvoyant) * 0.9, s=f'total time: {"{:.2f}".format(time.time() - start)}')
 
-plt.text(x=T * 0.6, y=regret[-1] * 0.5, s=f'total regret: {"{:.2f}".format(regret[-1])}\n'
-                                          f'total clicks: {"{:.2f}".format(sum(y))}')
+    plt.subplot(gs[0, 1])
+    regret = []
+    regret2 = []
+    for i in range(len(x)):
+        # aux = y_clairvoyant[i] - y[i] + (regret[-1] if i > 0 else 0)
+        # regret.append(aux)
+        aux = y_clairvoyant[i] - y2[i] + (regret2[-1] if i > 0 else 0)
+        regret2.append(aux)
 
-plt.show()
+    # plt.plot(x, regret, color='blue')
+    plt.plot(x, regret2, color='red')
+
+    plt.text(x=T * 0.6, y=regret2[-1] * 0.5, s=f'total regret: {"{:.2f}".format(regret2[-1])}\n'
+                                              f'total clicks: {"{:.2f}".format(sum(y2))}')
+
+
+    plt.show()

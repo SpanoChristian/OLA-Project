@@ -5,7 +5,7 @@ from Learners.GPTS_Learner import *
 
 
 class ComparisonRunner:
-    def __init__(self, environment: Environment, optimizer, learners, dont_update_before=1):
+    def __init__(self, environment: Environment, optimizer, learners, dont_update_before=3):
         self.environment: Environment = environment
         self.optimizer = optimizer
         self.learners = learners
@@ -16,6 +16,10 @@ class ComparisonRunner:
         for i in range(0, T):
             self.environment.next_day()
             for learnerType in range(self.learnerTypes):
+                if i == 35:
+                    for learner in self.learners[learnerType]:
+                        print(["{:.2f}".format(arm) for arm in np.array(learner.pull_all_arms())])
+                    print('\n\n')
                 samples = np.zeros(shape=(0, len(self.environment.budgets)))
                 for learner in self.learners[learnerType]:
                     tmp = np.array(learner.pull_all_arms())
@@ -24,6 +28,7 @@ class ComparisonRunner:
 
                 arms = self.optimizer(samples)
                 rewards = self.environment.compute_rewards(arms)
+
 
                 for j in range(self.environment.n_subcampaigns):
                     arm_reward = rewards[j]

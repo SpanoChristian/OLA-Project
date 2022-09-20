@@ -50,5 +50,4 @@ class GP_UCB_Learner(Learner):
         return sampled_values
 
     def pull_all_arms(self):
-        sampled_values = np.maximum(np.random.normal(self.means, self.sigmas), 0)
         return sampled_values

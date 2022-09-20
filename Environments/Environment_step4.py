@@ -1,6 +1,7 @@
 import numpy as np
 from utils.graph_algorithm import get_graph_paths
 from Environments.Base_Environment import *
+from scipy.stats import t
 
 
 class Environment4(Base_Environment):
@@ -9,6 +10,7 @@ class Environment4(Base_Environment):
         self.multiplier = multiplier
         super().__init__(n_subcampaigns, subcampaign_class, np.array(alpha_bars), speeds, opponent, adj_matrix,
                          budgets, daily_clicks)
+
 
     def compute_rewards(self, pulled_arms):
         """
@@ -33,4 +35,3 @@ class Environment4(Base_Environment):
 class Subcampaign4(Base_Subcampaign):
     def __init__(self, budgets, alpha_bar, speed):
         super().__init__(budgets, alpha_bar, speed)
-

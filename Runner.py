@@ -11,6 +11,7 @@ class Runner:
         self.learnerArgs = learnerArgs
         self.dont_update_before = dont_update_before
         self.learners = []
+        self.pulled_super_arms = []
 
     def run(self, T=40):
 
@@ -20,6 +21,11 @@ class Runner:
             self.learners.append(learner)
 
         for i in range(0, T):
+            # if i == 35:
+            #     for learner in self.learners:
+            #         print(["{:.2f}".format(arm) for arm in np.array(learner.pull_all_arms())])
+            #     print('\n\n')
+
             samples = np.zeros(shape=(0, len(self.environment.budgets)))
             for learner in self.learners:
                 tmp = np.array(learner.pull_all_arms())
@@ -27,8 +33,8 @@ class Runner:
                 self.environment.set_phase(learner.get_phase())
 
             arms = self.optimizer(samples)
+            self.pulled_super_arms.append(arms)
             rewards = self.environment.compute_rewards(arms)
-
 
 
             for j in range(self.environment.n_subcampaigns):
