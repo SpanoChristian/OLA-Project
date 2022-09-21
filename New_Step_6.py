@@ -2,13 +2,18 @@ import time
 
 import matplotlib.pyplot as plt
 from matplotlib import gridspec
-
+import logging
+import warnings
 from Environments.Environment_step6_SW import *
 from Learners import SW_Learner
+from Learners.GPUCB_Learner import *
 from Learners.SW_Learner import *
 from Runner import Runner
 from utils.MKCP import mkcp_solver
 
+warnings.filterwarnings("ignore")
+logging.getLogger('matplotlib.pyplot').disabled = True
+logging.getLogger('matplotlib.font_manager').disabled = True
 
 class Config(object):
     pass
@@ -27,31 +32,29 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 100)
-
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 1.7, 5)
 
 window_factor = 2
 T = 1000
-window_size = window_factor*int(np.sqrt(T))
+window_size = window_factor * int(np.sqrt(T))
 # rows: phases, cols: arms
 p = np.array([np.ones(100),
-             np.random.rand(100),
-             np.ones(100)])
+              np.random.rand(100),
+              np.ones(100)])
 
-env = Environment_step6_SW(n_subcampaigns=config.n_subcampaigns,
-                           subcampaign_class=Subcampaign6,
-                           alpha_bars=config.alpha_bars,
-                           speeds=config.speeds,
-                           opponent=config.opponent,
-                           adj_matrix=config.adj_matrix,
-                           budgets=config.budgets,
-                           daily_clicks=100,
-                           probs_matrix=p,
-                           horizon=T
-                           )
+env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
+                       subcampaign_class=Subcampaign6,
+                       alpha_bars=config.alpha_bars,
+                       speeds=config.speeds,
+                       opponent=config.opponent,
+                       adj_matrix=config.adj_matrix,
+                       budgets=config.budgets,
+                       daily_clicks=100,
+                       # probs_matrix=p,
+                       # horizon=T
+                       )
 
-
-runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1, n_changes=2)
+runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=SW_Learner, dont_update_before=1)
 
 start = time.time()
 runner.run(T)

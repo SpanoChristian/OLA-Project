@@ -56,16 +56,18 @@ while True:
                        phases=phases
                        )
     learners = [
+
         [GPTS_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
         [CD_GPUCB_Learner(env.budgets, M_cd=40) for _ in range(env.n_subcampaigns)],
+        [SW_Learner(env.budgets) for _ in range(env.n_subcampaigns)],
     ]
     runner = ComparisonRunner(environment=env, optimizer=mkcp_solver, learners=learners)
     start = time.time()
-    T = 130
+    T = 150
     runner.run(T)
 
     gs = gridspec.GridSpec(1, 2)
-    plt.figure(figsize=(13, 5))
+    plt.figure(figsize=(10, 5))
 
     plt.subplot(gs[0, 0])
     y_clairvoyant = [phase['reward']
@@ -76,9 +78,12 @@ while True:
     x = range(T)
     y = [sum([learner.collected_rewards[i] for learner in runner.learners[0]]) for i in range(T)]
     y2 = [sum([learner.collected_rewards[i] for learner in runner.learners[1]]) for i in range(T)]
+    y3 = [sum([learner.collected_rewards[i] for learner in runner.learners[2]]) for i in range(T)]
 
     plt.plot(x, y, color='blue', label=u'GPTS reward')
     plt.plot(x, y2, color='red', label=u'GPTS reward')
+    plt.plot(x, y3, color='green', label=u'GPTS reward')
+
     #
     changes = []
     for learner in runner.learners[1]:
@@ -97,6 +102,7 @@ while True:
     plt.subplot(gs[0, 1])
     regret = []
     regret2 = []
+    regret3 = []
     for i in range(len(x)):
         diff = y_clairvoyant[i] - y[i]
         aux = (diff if diff > 0 else 0) + (regret[-1] if i > 0 else 0)
@@ -104,13 +110,19 @@ while True:
         diff = y_clairvoyant[i] - y2[i]
         aux = (diff if diff > 0 else 0) + (regret2[-1] if i > 0 else 0)
         regret2.append(aux)
+        diff = y_clairvoyant[i] - y3[i]
+        aux = (diff if diff > 0 else 0) + (regret3[-1] if i > 0 else 0)
+        regret3.append(aux)
 
     plt.plot(x, regret, color='blue')
     plt.plot(x, regret2, color='red')
+    plt.plot(x, regret3, color='green')
 
-    plt.text(x=0, y=max(regret)*0.7, s=f'total regret gpts: {"{:.2f}".format(regret[-1])}\n'
-                                               f'total clicks gpts: {"{:.2f}".format(sum(y))}\n'
-                                               f'total regret gpts: {"{:.2f}".format(regret2[-1])}\n'
-                                               f'total clicks gpts: {"{:.2f}".format(sum(y2))}\n')
+    plt.text(x=0, y=max(regret) * 0.7, s=f'total regret gpts: {"{:.2f}".format(regret[-1])}\n'
+                                         f'total clicks gpts: {"{:.2f}".format(sum(y))}\n'
+                                         f'total regret cd_ucb: {"{:.2f}".format(regret2[-1])}\n'
+                                         f'total clicks cd_ucb: {"{:.2f}".format(sum(y2))}\n'
+                                         f'total regret sw: {"{:.2f}".format(regret3[-1])}\n'
+                                         f'total clicks sw: {"{:.2f}".format(sum(y2))}\n')
     print('next')
     plt.show()

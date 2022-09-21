@@ -33,78 +33,107 @@ config.adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 20)
+config.budgets = np.linspace(0, sum(5 / np.array(config.speeds)) / 2, 10)
 
 while True:
-    env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
-                           subcampaign_class=Base_Subcampaign,
-                           alpha_bars=config.alpha_bars,
-                           speeds=config.speeds,
-                           opponent=config.opponent,
-                           adj_matrix=config.adj_matrix,
-                           budgets=config.budgets,
-                           daily_clicks=100
-                           )
+    env = Environment5(n_subcampaigns=config.n_subcampaigns,
+                       subcampaign_class=Base_Subcampaign,
+                       alpha_bars=config.alpha_bars,
+                       speeds=config.speeds,
+                       multiplier=10000,
+                       sigma_matrix=0.1,
+                       opponent=config.opponent,
+                       adj_matrix=config.adj_matrix,
+                       budgets=config.budgets,
+                       daily_clicks=100
+                       )
 
     runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
 
-    start = time.time()
-    T = 30
+    # start = time.time()
+    T = 100
     runner.run(T)
-    print_experiment(runner)
+    gs = gridspec.GridSpec(2, 2)
+    plt.figure(figsize=(13, 10))
+    print_experiment(runner, gs, 0)
 
-    rewards = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]
-    cumulative_lower_bound, computed_best_arm = compute_best_arm(rewards=rewards,
-                                                                 pulled_super_arms=runner.pulled_super_arms)
-    clairvoyant_mean, clairvoyant_cb, sol = get_clairvoyant_score(runner.environment, 5)
-    print(f'best arm computed: {computed_best_arm}, cumulative_lb: {cumulative_lower_bound}, '
-          f'reward: {rewards[runner.pulled_super_arms.index(computed_best_arm)]}')
-    print(
-        f'highest score reached: {max(rewards)}, highest score arm: {runner.pulled_super_arms[rewards.index(max(rewards))]}')
-    print(f'optimal arm: {sol}, optimal arm reward: {clairvoyant_mean}')
+    env = Environment5(n_subcampaigns=config.n_subcampaigns,
+                       subcampaign_class=Base_Subcampaign,
+                       alpha_bars=config.alpha_bars,
+                       speeds=config.speeds,
+                       multiplier=10000,
+                       sigma_matrix=0.1,
+                       opponent=config.opponent,
+                       adj_matrix=config.adj_matrix,
+                       budgets=config.budgets,
+                       daily_clicks=100
+                       )
 
-    best_arm_computed = computed_best_arm
-    highest_score_arm = runner.pulled_super_arms[rewards.index(max(rewards))]
-    clairvoyant = sol
-    records = [[], [], []]
+    runner = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GP_UCB_Learner)
 
-    for i in range(100):
-        records[0].append(sum(env.compute_rewards(best_arm_computed)))
-        records[1].append(sum(env.compute_rewards(highest_score_arm)))
-        records[2].append(sum(env.compute_rewards(clairvoyant)))
+    # start = time.time()
+    T = 100
+    runner.run(T)
+    print_experiment(runner, gs, 1)
+    plt.show()
 
-    scores = [np.mean(i) for i in records]
-    print(scores)
-    records = [[], [], []]
+    # rewards = [sum([learner.collected_rewards[i] for learner in runner.learners]) for i in range(T)]
+    # cumulative_lower_bound, computed_best_arm = compute_best_arm(rewards=rewards,
+    #                                                              pulled_super_arms=runner.pulled_super_arms)
+    # clairvoyant_mean, clairvoyant_cb, sol = get_clairvoyant_score(runner.environment, 5)
+    # print(f'best arm computed: {computed_best_arm}, cumulative_lb: {cumulative_lower_bound}, '
+    #       f'reward: {rewards[runner.pulled_super_arms.index(computed_best_arm)]}')
+    # print(
+    #     f'highest score reached: {max(rewards)}, highest score arm: {runner.pulled_super_arms[rewards.index(max(rewards))]}')
+    # print(f'optimal arm: {sol}, optimal arm reward: {clairvoyant_mean}')
 
-    for i in range(100):
-        records[0].append(sum(env.compute_rewards(best_arm_computed)))
-        records[1].append(sum(env.compute_rewards(highest_score_arm)))
-        records[2].append(sum(env.compute_rewards(clairvoyant)))
 
-    scores = [np.mean(i) for i in records]
-    print(scores)
-    records = [[], [], []]
-    for j in range(3):
-        env = Base_Environment(n_subcampaigns=config.n_subcampaigns,
-                               subcampaign_class=Base_Subcampaign,
-                               alpha_bars=config.alpha_bars,
-                               speeds=config.speeds,
-                               opponent=config.opponent,
-                               adj_matrix=config.adj_matrix,
-                               budgets=config.budgets,
-                               daily_clicks=100
-                               )
-        for i in range(100):
-            if j == 0:
-                records[0].append(sum(env.compute_rewards(best_arm_computed)))
-            if j == 1:
-                records[1].append(sum(env.compute_rewards(highest_score_arm)))
-            if j == 2:
-                records[2].append(sum(env.compute_rewards(clairvoyant)))
-    scores = [np.mean(i) for i in records]
-    print(scores)
-    records = [[], [], []]
+
+
+    # best_arm_computed = computed_best_arm
+    # highest_score_arm = runner.pulled_super_arms[rewards.index(max(rewards))]
+    # clairvoyant = sol
+    # records = [[], [], []]
+    #
+    # for i in range(100):
+    #     records[0].append(sum(env.compute_rewards(best_arm_computed)))
+    #     records[1].append(sum(env.compute_rewards(highest_score_arm)))
+    #     records[2].append(sum(env.compute_rewards(clairvoyant)))
+    #
+    # scores = [np.mean(i) for i in records]
+    # print(scores)
+    # records = [[], [], []]
+    #
+    # for i in range(100):
+    #     records[0].append(sum(env.compute_rewards(best_arm_computed)))
+    #     records[1].append(sum(env.compute_rewards(highest_score_arm)))
+    #     records[2].append(sum(env.compute_rewards(clairvoyant)))
+    #
+    # scores = [np.mean(i) for i in records]
+    # print(scores)
+    # records = [[], [], []]
+    # for j in range(3):
+    #     env = Environment5(n_subcampaigns=config.n_subcampaigns,
+    #                        subcampaign_class=Base_Subcampaign,
+    #                        alpha_bars=config.alpha_bars,
+    #                        speeds=config.speeds,
+    #                        multiplier=10000,
+    #                        sigma_matrix=0.01,
+    #                        opponent=config.opponent,
+    #                        adj_matrix=config.adj_matrix,
+    #                        budgets=config.budgets,
+    #                        daily_clicks=100
+    #                        )
+    #     for i in range(100):
+    #         if j == 0:
+    #             records[0].append(sum(env.compute_rewards(best_arm_computed)))
+    #         if j == 1:
+    #             records[1].append(sum(env.compute_rewards(highest_score_arm)))
+    #         if j == 2:
+    #             records[2].append(sum(env.compute_rewards(clairvoyant)))
+    # scores = [np.mean(i) for i in records]
+    # print(scores)
+    # records = [[], [], []]
 
 # cumulative_lower_bound, computed_best_arm = compute_best_arm(rewards=y, pulled_super_arms=runner.pulled_super_arms)
 # print(f'best arm computed: {computed_best_arm}, cumulative_lb: {cumulative_lower_bound}, '

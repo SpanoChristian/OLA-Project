@@ -11,7 +11,7 @@ class ComparisonRunner:
         self.learners = learners
         self.learnerTypes = len(learners)
         self.dont_update_before = dont_update_before
-        self.rewards = [[],[]]
+        self.rewards = [[],[],[] ]
 
     def run(self, T=40):
         for i in range(0, T):

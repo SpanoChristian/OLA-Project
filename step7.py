@@ -88,18 +88,18 @@ def f(alpha_bar, speed, budget):
 
 x = np.linspace(0, budgets[-1], 50)
 selected_contexts = list(filter(
-    lambda ctx: list(map(lambda feature: feature.value, ctx.features)) in [["m", "y"], ["f", "y"], ["m", "a"]],
+    lambda ctx: list(map(lambda feature: feature.value, ctx.features)) in [[None, None]],
     contexts))
 ys = np.array([[f(ctx.env.alpha_bars[i], ctx.env.speeds[i], x) for i in range(5)] for ctx in selected_contexts])
 
-gs = gridspec.GridSpec(1, 3)
-plt.figure(figsize=(15, 5))
+gs = gridspec.GridSpec(1, 1)
+plt.figure(figsize=(5, 5))
 items = ["computer", "tablet", "phone", "headphones", "charger"]
 colors = ["b", "g", "r", "c", "m"]
 for i, subcampaigns in enumerate(ys):
     ax = plt.subplot(gs[0, i])
     for j, subcampaign in enumerate(subcampaigns):
-        ax.set_title(", ".join(list(map(lambda feature: feature.value, selected_contexts[i].features))))
+        # ax.set_title(", ".join(list(map(lambda feature: feature.value, selected_contexts[i].features))))
         plt.plot(x, subcampaign, c=colors[j], label=items[j])
     plt.legend()
 plt.show()
