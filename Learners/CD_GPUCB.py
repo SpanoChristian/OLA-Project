@@ -66,12 +66,6 @@ class CD_GPUCB_Learner(Learner):
 
         if self.detectors[arm_idx].update_detector(reward):
             self.rewards_per_arm[arm_idx] = []
-            to_be_deleted = [i for i, pulled_arm in enumerate(self.pulled_arms_valid)
-                             if pulled_arm == self.arms[arm_idx]]
-            # self.pulled_arms_valid = [pulled_arm for i, pulled_arm in enumerate(self.pulled_arms_valid)
-            #                           if i not in to_be_deleted]
-            # self.rewards_valid = [collected_reward for i, collected_reward in enumerate(self.rewards_valid)
-            #                       if i not in to_be_deleted]
             self.pulled_arms_valid = [arm_idx]
             self.rewards_valid = [reward]
             self.changes.append(self.t)

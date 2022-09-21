@@ -11,7 +11,6 @@ class Environment4(Base_Environment):
         super().__init__(n_subcampaigns, subcampaign_class, np.array(alpha_bars), speeds, opponent, adj_matrix,
                          budgets, daily_clicks)
 
-
     def compute_rewards(self, pulled_arms):
         """
         calls super to compute the partitions, multiply everything by the multiplier (to regulate variance) and
@@ -30,6 +29,24 @@ class Environment4(Base_Environment):
         k = np.array(k) * self.multiplier
         k = (np.random.dirichlet(k) * self.daily_clicks)[1:]
         return [self.get_all_clicks(i, clicks) for i, clicks in enumerate(k)]
+
+    def merge(self, environment):
+        assert self.opponent == environment.opponent
+        assert self.daily_clicks == environment.daily_clicks
+        assert self.budgets == environment.budgets
+        assert self.multiplier == environment.multiplier
+        """..."""
+        env = Environment4(
+            n_subcampaigns=self.n_subcampaigns+environment.n_subcampaigns,
+            subcampaign_class=Subcampaign4,
+            alpha_bars=self.alpha_bars.extend(environment.alpha_bars),
+            multiplier=self.multiplier,
+            speeds=self.speeds.extend(environment.speeds),
+            opponent=self.opponent,
+            adj_matrix=config.adj_matrix,
+            budgets=self.budgets,
+            daily_clicks=self.daily_clicks)
+        return env
 
 
 class Subcampaign4(Base_Subcampaign):

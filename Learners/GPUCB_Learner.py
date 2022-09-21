@@ -13,7 +13,7 @@ class GP_UCB_Learner(Learner):
         self.means = np.zeros(self.n_arms)
         self.sigmas = np.ones(self.n_arms) * 0.7
         self.nt = [0.0001 for i in range(0, self.n_arms)]
-        self.beta = [100.0 for i in range(0, self.n_arms)]
+        self.beta = [10.0 for i in range(0, self.n_arms)]
 
         self.pulled_arms = []
         # default:

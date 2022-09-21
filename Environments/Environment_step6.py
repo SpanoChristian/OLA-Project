@@ -6,12 +6,16 @@ from Environments.Environment_step5 import *
 class Environment6(Environment5):
     def __init__(self, n_subcampaigns, subcampaign_class, alpha_bars, multiplier, speeds, opponent, adj_matrix,
                  sigma_matrix, budgets,
-                 daily_clicks, phase):
+                 daily_clicks, phase, phases=None):
         self.t = 0
         self.phase = phase
         self.optimal = []
         self.changed = False
-
+        self.phases = phases
+        if phases is not None:
+            alpha_bars = phases[0][0][1:]
+            speeds = phases[0][1]
+            opponent = phases[0][0][0]
         super().__init__(n_subcampaigns, subcampaign_class, alpha_bars, multiplier, speeds, opponent, adj_matrix,
                          sigma_matrix, budgets,
                          daily_clicks)
@@ -22,9 +26,14 @@ class Environment6(Environment5):
         self.optimal.append({'sol': self.optimal_sol, 'reward': self.optimal_sol_reward, 'start_from': self.t})
 
     def get_new_subcampaigns(self):
-        new_alpha_bar = np.random.dirichlet([0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
+        if self.phases is not None:
+            new_alpha_bar = self.phases[1][0]
+            self.speeds = self.phases[1][1]
+        else:
+            new_alpha_bar = np.random.dirichlet([0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
+            self.speeds = [np.random.uniform(0.001, 40) for i in range(self.n_subcampaigns)]
         self.opponent = new_alpha_bar[0]
-        self.speeds = [np.random.uniform(0.001, 40) for i in range(self.n_subcampaigns)]
+
         for i, subcampaign in enumerate(self.subcampaigns):
             subcampaign.update_means(new_alpha_bar[i + 1], self.speeds[i])
 

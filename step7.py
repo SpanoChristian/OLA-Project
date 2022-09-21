@@ -6,6 +6,8 @@ import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from utils.MKCP import *
 from Runner import *
+import json
+from ContextOptimizer import *
 
 logging.basicConfig(level=logging.DEBUG)
 warnings.filterwarnings("ignore")
@@ -49,6 +51,7 @@ def compute_lower_bound(runner):
 
 ## aggregate data
 ratios = to_sum_1(np.array([2.5, 2, 3, 1.6, 3, 3.9]))
+
 speeds = [0.1, 0.5, 1.5, 3, 2]
 adj_matrix = np.array([
     [0, 0, 0.04, 0.07, 0.9],
@@ -57,72 +60,49 @@ adj_matrix = np.array([
     [0.02, 0.02, 0, 0, 0],
     [0, 0.01, 0, 0, 0]
 ])
-
-environment_aggregate = Environment7(n_subcampaigns=config.n_subcampaigns,
-                                     subcampaign_class=Subcampaign4,
-                                     alpha_bars=ratios[1:],
-                                     multiplier=100000000,
-                                     speeds=speeds,
-                                     opponent=ratios[0],
-                                     adj_matrix=config.adj_matrix,
-                                     budgets=np.linspace(0, sum(5 / np.array(speeds)) / 2, 50),
-                                     daily_clicks=100
-                                     )
-runner_aggregate = Runner(environment=env, optimizer=mkcp_solver, learnerClass=GPTS_Learner)
-
-start = time.time()
-T = 15
-runner.run(T)
-
-
-class Feature:
-    def __init__(self, values, probabilities):
-        self.value = None
-        self.values = values
-        self.probabilities = probabilities
+budgets = np.linspace(0, sum(5 / np.array([0.7, 0.9, 0.5, 0.8, 0.8])) / 0.6, 20)
+f = open('./contexts.json')
+data = json.load(f)
+feature_values = [["m", "f"], ["y", "a"]]
+contexts = []
+for context in data:
+    env = Environment4(n_subcampaigns=5,
+                       subcampaign_class=Subcampaign4,
+                       alpha_bars=context['ratios'][1:],
+                       multiplier=100000,
+                       speeds=context['speeds'],
+                       opponent=context['ratios'][0],
+                       adj_matrix=adj_matrix,
+                       budgets=budgets,
+                       daily_clicks=100
+                       )
+    features = [Feature(feature_value=feature, values=feature_values[i])
+                for i, feature in enumerate(context["features"])]
+    contexts.append(Context(features=features, env=env, probability=context["probability"]))
 
 
-class Context:
-    def __init__(self, features, probability):
-        self.features = features
-        self.probability = probability
-
-    def get_split(self):
-        non_assigned_features = [feature for feature in self.features if feature.value is None]
-
-        if len(non_assigned_features) > 0:
-            index = features.index(non_assigned_features[0])
-            context0_features = features.copy()
-            context1_features = features.copy()
-            context0_features[index].value = non_assigned_features[0].values[0]
-            context1_features[index].value = non_assigned_features[0].values[1]
-
-            return [Context(context0_features, self.probability * context0_features[index].probabilities[0]),
-                    Context(context1_features, self.probability * context1_features[index].probabilities[1])]
-        else:
-            return []
+# print my, ma, fy
+def f(alpha_bar, speed, budget):
+    return alpha_bar * (1.0 - np.exp(-budget * speed))
 
 
-def get_score(context):
-    return 1
+x = np.linspace(0, budgets[-1], 50)
+selected_contexts = list(filter(
+    lambda ctx: list(map(lambda feature: feature.value, ctx.features)) in [["m", "y"], ["f", "y"], ["m", "a"]],
+    contexts))
+ys = np.array([[f(ctx.env.alpha_bars[i], ctx.env.speeds[i], x) for i in range(5)] for ctx in selected_contexts])
 
+gs = gridspec.GridSpec(1, 3)
+plt.figure(figsize=(15, 5))
+items = ["computer", "tablet", "phone", "headphones", "charger"]
+colors = ["b", "g", "r", "c", "m"]
+for i, subcampaigns in enumerate(ys):
+    ax = plt.subplot(gs[0, i])
+    for j, subcampaign in enumerate(subcampaigns):
+        ax.set_title(", ".join(list(map(lambda feature: feature.value, selected_contexts[i].features))))
+        plt.plot(x, subcampaign, c=colors[j], label=items[j])
+    plt.legend()
+plt.show()
 
-def get_score_merged(context0, context1):
-    return 1
-
-
-def context_generator(base_context):
-    contexts = [base_context]
-    final = []
-    while len(contexts) > 0:
-        context = contexts.pop()
-        score_aggregate = get_score(context)
-        sub_contexts = context.get_split()
-        if len(sub_contexts) > 0:
-            score_disaggregate = get_score_merged(sub_contexts[0], sub_contexts[1])
-            if score_disaggregate > score_aggregate:
-                contexts.extend([sub_contexts[0], sub_contexts[1]])
-            else:
-                final.append(context)
-        else:
-            final.append(context)
+# c = ContextOptimizer(contexts=contexts, learnerClass=GPTS_Learner, horizon=20)
+# c.run()

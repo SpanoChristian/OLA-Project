@@ -4,7 +4,7 @@ from Environments.Environment import *
 from Learners.GPTS_Learner import *
 
 class Runner:
-    def __init__(self, environment: Environment, optimizer, learnerClass, dont_update_before=1, **learnerArgs):
+    def __init__(self, environment: Environment, optimizer, learnerClass, dont_update_before=0, **learnerArgs):
         self.environment: Environment = environment
         self.optimizer = optimizer
         self.learnerClass = learnerClass
